@@ -21,3 +21,6 @@ All commits must follow the [Conventional Commits](https://www.conventionalcommi
 - The `<description>` should be in Vietnamese as per user preference, but keep it professional.
 - Always stage all relevant changes before committing.
 - Do not use generic messages like "update code" or "fix bug".
+
+## Shortcuts
+- `/cp`: When I see this, I will automatically `git add .`, generate a conventional commit message based on the changes, and `git push` without needing further confirmation for the command sequence.
