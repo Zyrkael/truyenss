@@ -3,9 +3,11 @@
 All commits must follow the [Conventional Commits](https://www.conventionalcommits.org/) specification.
 
 ## Format
+
 `<type>(<scope>): <description>`
 
 ## Types
+
 - `feat`: A new feature for the user, not a new feature for builds.
 - `fix`: A bug fix for the user, not a fix for builds.
 - `chore`: Updating grunt tasks etc; no production code change.
@@ -16,6 +18,7 @@ All commits must follow the [Conventional Commits](https://www.conventionalcommi
 - `test`: Adding missing tests, refactoring tests; no production code change.
 
 ## Guidelines
+
 - Use lowercase for the type.
 - The `<scope>` is optional but recommended for specific modules (e.g., `chore(config)`, `feat(auth)`).
 - The `<description>` nên bằng tiếng Việt theo sở thích của người dùng, nhưng hãy giữ sự chuyên nghiệp.

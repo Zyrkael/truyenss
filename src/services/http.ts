@@ -12,20 +12,20 @@ const http = axios.create({
 
 // ─── Request Interceptor ──────────────────────────────────────────────────────
 http.interceptors.request.use(
-  (config) => {
+  config => {
     const token = localStorage.getItem(ACCESS_TOKEN)
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
     return config
   },
-  (error) => Promise.reject(error),
+  error => Promise.reject(error),
 )
 
 // ─── Response Interceptor ─────────────────────────────────────────────────────
 http.interceptors.response.use(
-  (response) => response,
-  (error) => {
+  response => response,
+  error => {
     if (error.response?.status === HttpStatusCode.UNAUTHORIZED) {
       localStorage.removeItem(ACCESS_TOKEN)
       window.location.href = '/login'
@@ -36,19 +36,19 @@ http.interceptors.response.use(
 
 // ─── Các phương thức hay dùng ─────────────────────────────────────────────────
 const get = <T>(url: string, config?: AxiosRequestConfig) =>
-  http.get<T>(url, config).then((res) => res.data)
+  http.get<T>(url, config).then(res => res.data)
 
 const post = <T>(url: string, data?: unknown, config?: AxiosRequestConfig) =>
-  http.post<T>(url, data, config).then((res) => res.data)
+  http.post<T>(url, data, config).then(res => res.data)
 
 const put = <T>(url: string, data?: unknown, config?: AxiosRequestConfig) =>
-  http.put<T>(url, data, config).then((res) => res.data)
+  http.put<T>(url, data, config).then(res => res.data)
 
 const patch = <T>(url: string, data?: unknown, config?: AxiosRequestConfig) =>
-  http.patch<T>(url, data, config).then((res) => res.data)
+  http.patch<T>(url, data, config).then(res => res.data)
 
 const del = <T>(url: string, config?: AxiosRequestConfig) =>
-  http.delete<T>(url, config).then((res) => res.data)
+  http.delete<T>(url, config).then(res => res.data)
 
 export { get, post, put, patch, del }
 export default http

@@ -4,17 +4,18 @@
 
 ## 🛠 Tech Stack
 
-| Công nghệ | Phiên bản | Mô tả |
-|---|---|---|
-| [React](https://react.dev/) | ^19 | UI Framework |
-| [TypeScript](https://www.typescriptlang.org/) | ~6.0 | Type Safety |
-| [Vite](https://vite.dev/) | ^8.0 | Build Tool & Dev Server |
-| [SCSS (Sass)](https://sass-lang.com/) | ^1.99 | CSS Preprocessor |
-| [Bun](https://bun.sh/) | latest | Package Manager & Runtime |
+| Công nghệ                                     | Phiên bản | Mô tả                     |
+| --------------------------------------------- | --------- | ------------------------- |
+| [React](https://react.dev/)                   | ^19       | UI Framework              |
+| [TypeScript](https://www.typescriptlang.org/) | ~6.0      | Type Safety               |
+| [Vite](https://vite.dev/)                     | ^8.0      | Build Tool & Dev Server   |
+| [SCSS (Sass)](https://sass-lang.com/)         | ^1.99     | CSS Preprocessor          |
+| [Bun](https://bun.sh/)                        | latest    | Package Manager & Runtime |
 
 ## 🚀 Bắt đầu
 
 ### Yêu cầu
+
 - [Bun](https://bun.sh/) >= 1.0
 
 ### Cài đặt
@@ -63,12 +64,12 @@ src/
 
 Dự án sử dụng hệ thống quy tắc thống nhất được quản lý trong thư mục `.agents/`:
 
-| File | Nội dung |
-|---|---|
-| [.agents/rules/coding-rules.md](.agents/rules/coding-rules.md) | Tiêu chuẩn React/TypeScript, cấu trúc thư mục, package manager |
-| [.agents/rules/git-rules.md](.agents/rules/git-rules.md) | Quy tắc Conventional Commits, Atomic Commits |
-| [.agents/rules/ui-ux-rules.md](.agents/rules/ui-ux-rules.md) | Nguyên tắc thiết kế UI/UX |
-| [.agents/workflows/github-commit.md](.agents/workflows/github-commit.md) | Workflow commit & push tự động (`/cp`) |
+| File                                                                     | Nội dung                                                       |
+| ------------------------------------------------------------------------ | -------------------------------------------------------------- |
+| [.agents/rules/coding-rules.md](.agents/rules/coding-rules.md)           | Tiêu chuẩn React/TypeScript, cấu trúc thư mục, package manager |
+| [.agents/rules/git-rules.md](.agents/rules/git-rules.md)                 | Quy tắc Conventional Commits, Atomic Commits                   |
+| [.agents/rules/ui-ux-rules.md](.agents/rules/ui-ux-rules.md)             | Nguyên tắc thiết kế UI/UX                                      |
+| [.agents/workflows/github-commit.md](.agents/workflows/github-commit.md) | Workflow commit & push tự động (`/cp`)                         |
 
 ### Commit Convention
 
@@ -79,6 +80,7 @@ Dự án tuân thủ chuẩn [Conventional Commits](https://www.conventionalcomm
 ```
 
 **Ví dụ:**
+
 ```bash
 feat(ui): thêm component BookCard
 fix(api): sửa lỗi gọi API danh sách truyện
