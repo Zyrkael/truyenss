@@ -1,26 +1,16 @@
-# Git Commit Rules for AI Agents
+# Project Rules & Agent Instructions
 
-All commits must follow the [Conventional Commits](https://www.conventionalcommits.org/) specification.
+Tất cả các quy tắc hoạt động, tiêu chuẩn code và quy trình làm việc của Agent được tổ chức trong thư mục `.agents`.
 
-## Format
-`<type>(<scope>): <description>`
+## Hướng dẫn cho Agent
+- Luôn kiểm tra thư mục `.agents/rules` để biết các tiêu chuẩn coding, git và thiết kế.
+- Luôn kiểm tra thư mục `.agents/workflows` để biết các quy trình tự động hóa (ví dụ: `/cp` cho commit & push).
 
-## Types
-- `feat`: A new feature for the user, not a new feature for builds.
-- `fix`: A bug fix for the user, not a fix for builds.
-- `chore`: Updating grunt tasks etc; no production code change.
-- `docs`: Changes to the documentation.
-- `style`: Formatting, missing semi colons, etc; no production code change.
-- `refactor`: Refactoring production code, eg. renaming a variable.
-- `perf`: Code change that improves performance.
-- `test`: Adding missing tests, refactoring tests; no production code change.
+## Các quy tắc quan trọng
+- **Git**: Tuân thủ chuẩn Conventional Commits trong [.agents/rules/git-rules.md](file:///d:/Frontend/truyenss/.agents/rules/git-rules.md).
+- **Coding**: Áp dụng tiêu chuẩn React/TypeScript trong [.agents/rules/coding-rules.md](file:///d:/Frontend/truyenss/.agents/rules/coding-rules.md).
+- **UI/UX**: Theo sát nguyên tắc thiết kế cao cấp trong [.agents/rules/ui-ux-rules.md](file:///d:/Frontend/truyenss/.agents/rules/ui-ux-rules.md).
+- **Ngôn ngữ**: Ưu tiên sử dụng tiếng Việt trong các mô tả và trao đổi nếu không có yêu cầu khác.
+- **Workflow**: Sử dụng các lệnh tắt được định nghĩa trong `.agents/workflows`.
 
-## Guidelines
-- Use lowercase for the type.
-- The `<scope>` is optional but recommended for specific modules (e.g., `chore(config)`, `feat(auth)`).
-- The `<description>` should be in Vietnamese as per user preference, but keep it professional.
-- Always stage all relevant changes before committing.
-- Do not use generic messages like "update code" or "fix bug".
 
-## Shortcuts
-- `/cp`: When I see this, I will automatically `git add .`, generate a conventional commit message based on the changes, and `git push` without needing further confirmation for the command sequence.
