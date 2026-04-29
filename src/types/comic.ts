@@ -1,5 +1,6 @@
 export interface Comic {
   id: string
+  slug: string
   title: string
   coverUrl: string
   latestChapter: string

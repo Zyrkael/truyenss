@@ -6,7 +6,7 @@ import styles from './ComicCard.module.scss'
 
 interface ComicCardProps {
   comic: Comic
-  onClick?: (id: string) => void
+  onClick?: (slug: string) => void
 }
 
 const formatViews = (views: number) => {
@@ -15,9 +15,15 @@ const formatViews = (views: number) => {
   return views.toString()
 }
 
+const STATUS_LABEL: Record<Comic['status'], string> = {
+  ongoing: 'Đang ra',
+  completed: 'Hoàn thành',
+  paused: 'Tạm dừng',
+}
+
 export const ComicCard: React.FC<ComicCardProps> = ({ comic, onClick }) => {
   const handleClick = () => {
-    if (onClick) onClick(comic.id)
+    if (onClick) onClick(comic.slug)
   }
 
   return (
@@ -36,24 +42,27 @@ export const ComicCard: React.FC<ComicCardProps> = ({ comic, onClick }) => {
           }
           className={styles.statusBadge}
         >
-          {comic.status}
+          {STATUS_LABEL[comic.status]}
         </Badge>
 
-        {/* View Count */}
-        <div className={styles.viewBadge}>
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-            <circle cx="12" cy="12" r="3" />
-          </svg>
-          {formatViews(comic.viewCount)}
-        </div>
+        {comic.viewCount > 0 ? (
+          <div className={styles.viewBadge}>
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+            {formatViews(comic.viewCount)}
+          </div>
+        ) : (
+          <div className={styles.categoryBadge}>{comic.categories[0] ?? 'Truyện mới'}</div>
+        )}
 
         {/* Read Overlay */}
         <div className={styles.readOverlay}>
@@ -66,9 +75,7 @@ export const ComicCard: React.FC<ComicCardProps> = ({ comic, onClick }) => {
           {comic.title}
         </Card.Title>
         <div className={styles.footer}>
-          <span className={styles.chapter}>
-            {comic.latestChapter}
-          </span>
+          <span className={styles.chapter}>{comic.latestChapter}</span>
           <span className={styles.time}>{comic.updatedAt}</span>
         </div>
       </Card.Body>

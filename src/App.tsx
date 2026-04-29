@@ -2,8 +2,10 @@ import { Helmet } from 'react-helmet-async'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { MainLayout } from './layouts'
 import { Home } from './pages/Home'
+import { Category } from './pages/Category'
 import { Forbidden } from './pages/Forbidden'
 import { NotFound } from './pages/NotFound'
+import { ComicDetail } from './pages/ComicDetail'
 
 function App() {
   return (
@@ -22,6 +24,9 @@ function App() {
         <Routes>
           <Route path="/" element={<MainLayout />}>
             <Route index element={<Home />} />
+            <Route path="the-loai" element={<Category />} />
+            <Route path="the-loai/:slug" element={<Category />} />
+            <Route path="truyen/:slug" element={<ComicDetail />} />
             <Route path="403" element={<Forbidden />} />
             <Route path="*" element={<NotFound />} />
           </Route>
