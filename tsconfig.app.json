@@ -1,5 +1,24 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "~": ["./src"],
+      "~/*": ["./src/*"],
+      "~utils": ["./src/utils"],
+      "~utils/*": ["./src/utils/*"],
+      "~components": ["./src/components"],
+      "~components/*": ["./src/components/*"],
+      "~constants": ["./src/constants"],
+      "~constants/*": ["./src/constants/*"],
+      "~services": ["./src/services"],
+      "~services/*": ["./src/services/*"],
+      "~hooks": ["./src/hooks"],
+      "~hooks/*": ["./src/hooks/*"],
+      "~assets": ["./src/assets"],
+      "~assets/*": ["./src/assets/*"],
+      "~types": ["./src/types"],
+      "~types/*": ["./src/types/*"]
+    },
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "target": "es2023",
     "lib": ["ES2023", "DOM"],
