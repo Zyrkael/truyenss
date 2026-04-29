@@ -1,5 +1,6 @@
 import axios from 'axios'
 import type { AxiosRequestConfig } from 'axios'
+import { ACCESS_TOKEN, HttpStatusCode } from '~utils/constants'
 
 const http = axios.create({
   baseURL: import.meta.env.VITE_API_URL ?? 'http://localhost:3000',
@@ -12,7 +13,7 @@ const http = axios.create({
 // ─── Request Interceptor ──────────────────────────────────────────────────────
 http.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('access_token')
+    const token = localStorage.getItem(ACCESS_TOKEN)
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
@@ -25,8 +26,8 @@ http.interceptors.request.use(
 http.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem('access_token')
+    if (error.response?.status === HttpStatusCode.UNAUTHORIZED) {
+      localStorage.removeItem(ACCESS_TOKEN)
       window.location.href = '/login'
     }
     return Promise.reject(error)
