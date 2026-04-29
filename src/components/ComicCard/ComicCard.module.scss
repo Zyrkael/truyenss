@@ -4,7 +4,7 @@
   flex-direction: column;
   border-radius: 12px;
   overflow: hidden;
-  background-color: #1a1a2e; /* Dark premium background */
+  background-color: var(--card-bg);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
@@ -36,7 +36,7 @@
   width: 100%;
   aspect-ratio: 2 / 3;
   overflow: hidden;
-  background-color: #2a2a4a;
+  background-color: rgba(128, 128, 128, 0.2);
 
   &::after {
     content: '';
@@ -137,7 +137,7 @@
 .title {
   font-size: 1rem;
   font-weight: 700;
-  color: #ffffff;
+  color: #fff;
   margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -168,6 +168,6 @@
 
 .time {
   font-size: 0.75rem;
-  color: #a0a0b8;
+  color: #e0e0e0;
   font-weight: 500;
 }

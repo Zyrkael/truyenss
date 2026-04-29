@@ -1,0 +1,29 @@
+.header {
+  background-color: var(--header-bg) !important;
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--header-border);
+  padding: 15px 0;
+
+  .brand {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--app-text) !important;
+    letter-spacing: 1px;
+
+    span {
+      color: #3498db;
+    }
+  }
+
+  .navLink {
+    color: var(--app-text-muted) !important;
+    font-weight: 500;
+    margin: 0 10px;
+    transition: color 0.3s ease;
+
+    &:hover,
+    &.active {
+      color: var(--app-text) !important;
+    }
+  }
+}

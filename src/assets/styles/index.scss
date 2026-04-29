@@ -1,2 +1,31 @@
 @use 'reset';
 @import 'bootstrap/scss/bootstrap';
+
+:root,
+[data-bs-theme='light'] {
+  --app-bg: #f4f6f8;
+  --app-text: #2c3e50;
+  --app-text-muted: #7f8c8d;
+  --card-bg: #ffffff;
+  --header-bg: rgba(255, 255, 255, 0.85);
+  --header-border: rgba(0, 0, 0, 0.1);
+  --border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-bs-theme='dark'] {
+  --app-bg: #0f0f1a;
+  --app-text: #ffffff;
+  --app-text-muted: #a0a0b8;
+  --card-bg: #1a1a2e;
+  --header-bg: rgba(15, 15, 26, 0.8);
+  --header-border: rgba(255, 255, 255, 0.1);
+  --border-color: rgba(255, 255, 255, 0.1);
+}
+
+body {
+  background-color: var(--app-bg);
+  color: var(--app-text);
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}

@@ -66,9 +66,9 @@ export const ComicCard: React.FC<ComicCardProps> = ({ comic, onClick }) => {
           {comic.title}
         </Card.Title>
         <div className={styles.footer}>
-          <Badge bg="info" className={styles.chapter}>
+          <span className={styles.chapter}>
             {comic.latestChapter}
-          </Badge>
+          </span>
           <span className={styles.time}>{comic.updatedAt}</span>
         </div>
       </Card.Body>
