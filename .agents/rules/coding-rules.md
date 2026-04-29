@@ -4,6 +4,7 @@ Dự án sử dụng React, TypeScript và Vite. Tất cả mã nguồn phải t
 
 ## 1. Nguyên tắc chung
 - **Clean Code**: Ưu tiên mã nguồn dễ đọc hơn là mã nguồn ngắn gọn.
+- **No Magic Values**: Tuyệt đối không sử dụng các giá trị magic (số, chuỗi "cứng" không rõ ý nghĩa) trực tiếp trong code. Hãy đưa chúng vào hằng số (`const`) hoặc `enum` với tên gọi rõ ràng.
 - **DRY (Don't Repeat Yourself)**: Tái sử dụng logic thông qua các custom hooks hoặc utility functions.
 - **KISS (Keep It Simple, Stupid)**: Giữ cho các component đơn giản và tập trung vào một nhiệm vụ duy nhất.
 
