@@ -34,3 +34,9 @@ Dự án sử dụng React, TypeScript và Vite. Tất cả mã nguồn phải t
 ## 5. Hiệu năng
 - Sử dụng `useMemo` và `useCallback` một cách hợp lý để tránh re-render không cần thiết.
 - Lazy load các trang/component lớn nếu có thể.
+
+## 6. Package Manager
+- **Luôn dùng `bun`** để cài đặt thư viện. Không dùng `npm` hay `yarn`.
+- Cài thư viện: `bun add <package>`
+- Cài dev dependency: `bun add -d <package>`
+- Gỡ thư viện: `bun remove <package>`
