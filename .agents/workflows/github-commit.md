@@ -6,12 +6,16 @@ description: Tự động stage, commit và push code theo chuẩn Conventional 
 
 // turbo-all
 
-- `/auto-commit-push`: Khi nhận được lệnh này, hãy thực hiện các bước sau để commit và push code:
-  1. Kiểm tra danh sách các file đã thay đổi (`git status`).
-  2. Phân loại các thay đổi: Nếu các file thuộc về các phạm vi (scope) hoặc mục đích khác nhau (ví dụ: một file sửa UI, một file sửa logic API), hãy chia thành các nhóm commit riêng biệt.
-  3. Với mỗi nhóm thay đổi:
-     a. Chạy `git add <các_file_liên_quan>`.
-     b. Tạo message commit chuẩn Conventional Commits bằng tiếng Việt cho nhóm đó (ví dụ: `feat(ui): ...` hoặc `fix(api): ...`).
-     c. Thực hiện commit.
-  4. Nếu tất cả thay đổi đều cùng mục đích, có thể dùng `git add .` và commit một lần.
-  5. Sau khi hoàn thành tất cả các commit, chạy `git push`.
+- Trigger: `/cp` (alias: `/auto-commit-push`)
+- Khi nhận lệnh, thực hiện theo thứ tự:
+  1. Kiểm tra danh sách file thay đổi bằng `git status`.
+  2. Kiểm tra nội dung thay đổi bằng `git diff` (và `git diff --staged` nếu có).
+  3. Nhóm thay đổi theo scope/mục đích; ưu tiên commit nhỏ, dễ review.
+  4. Với mỗi nhóm:
+     - Stage đúng file liên quan: `git add <files>`.
+     - Tạo commit message theo Conventional Commits, tiếng Việt, rõ "vì sao".
+     - Commit bằng định dạng:
+       - `<type>(<scope>): <mô tả ngắn>`
+  5. Chỉ `git add .` khi toàn bộ thay đổi cùng một mục đích.
+  6. Sau khi commit xong, chạy `git push`.
+  7. Báo lại hash commit và trạng thái branch sau push.
