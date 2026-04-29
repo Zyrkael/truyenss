@@ -21,7 +21,10 @@ Dự án sử dụng React, TypeScript và Vite. Tất cả mã nguồn phải t
 - `hooks/`: Các custom hooks.
 - `services/`: Các logic gọi API.
 - `pages/`: Các component đại diện cho một trang.
-- `assets/`: Hình ảnh, font, styles chung.
+- `assets/`: 
+    - `images/`: Hình ảnh, icons.
+    - `fonts/`: Các file font.
+    - `styles/`: Các file SCSS/CSS global (ví dụ: `index.scss`, `variables.scss`, `mixins.scss`).
 - `utils/`: Các hàm tiện ích.
 
 ## 4. State Management
