@@ -96,3 +96,26 @@ export interface OTruyenComicDetailResponse {
   message: string
   data: OTruyenComicDetailData
 }
+
+/** JSON tại URL `chapter_api_data` (nội dung một chương). */
+export interface OTruyenChapterPageImage {
+  image_file: string
+}
+
+export interface OTruyenChapterContentItem {
+  chapter_path: string
+  chapter_image: OTruyenChapterPageImage[]
+  updatedAt?: string
+}
+
+export interface OTruyenChapterContentData {
+  domain_cdn?: string
+  APP_DOMAIN_CDN_IMAGE?: string
+  item: OTruyenChapterContentItem
+}
+
+export interface OTruyenChapterContentResponse {
+  status: string
+  message?: string
+  data: OTruyenChapterContentData
+}
