@@ -576,23 +576,29 @@ export const AccountPage: React.FC = () => {
             </TabPanel>
 
             <TabPanel value={activeTab} id="following">
-              <Stack spacing={1} sx={{ mb: 2.5 }}>
+              <Stack spacing={0.75} sx={{ mb: 2 }}>
                 <Stack direction="row" spacing={1} sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
                   <Box
                     sx={{
-                      width: 4,
-                      height: 22,
+                      width: 3,
+                      height: 18,
                       borderRadius: 0.5,
                       background: t => `linear-gradient(180deg, ${t.palette.primary.light}, ${t.palette.primary.dark})`,
                     }}
                   />
-                  <Typography variant="subtitle1" sx={{ fontWeight: 800 }}>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 800 }}>
                     Truyện đang theo dõi
                   </Typography>
-                  <Chip size="small" label={following.length} color="primary" variant="outlined" sx={{ fontWeight: 700 }} />
+                  <Chip
+                    size="small"
+                    label={following.length}
+                    color="primary"
+                    variant="outlined"
+                    sx={{ height: 22, fontWeight: 700, '& .MuiChip-label': { px: 0.75, fontSize: '0.7rem' } }}
+                  />
                 </Stack>
-                <Typography variant="body2" color="text.secondary" sx={{ pl: { xs: 0, sm: 2 } }}>
-                  Chạm thẻ để mở trang truyện. Dữ liệu mẫu — API thật sẽ thay khi backend sẵn sàng.
+                <Typography variant="caption" color="text.secondary" sx={{ pl: { xs: 0, sm: 1.75 }, display: 'block', lineHeight: 1.45 }}>
+                  Chạm thẻ để mở trang truyện (dữ liệu mẫu).
                 </Typography>
               </Stack>
 
@@ -623,12 +629,12 @@ export const AccountPage: React.FC = () => {
                 <Box
                   sx={{
                     display: 'grid',
-                    gap: 2.5,
+                    gap: { xs: 1, sm: 1.25 },
                     gridTemplateColumns: {
-                      xs: 'repeat(2, minmax(0, 1fr))',
-                      sm: 'repeat(3, minmax(0, 1fr))',
-                      md: 'repeat(3, minmax(0, 1fr))',
-                      lg: 'repeat(4, minmax(0, 1fr))',
+                      xs: 'repeat(3, minmax(0, 1fr))',
+                      sm: 'repeat(4, minmax(0, 1fr))',
+                      md: 'repeat(5, minmax(0, 1fr))',
+                      lg: 'repeat(6, minmax(0, 1fr))',
                     },
                   }}
                 >
@@ -638,15 +644,15 @@ export const AccountPage: React.FC = () => {
                       variant="outlined"
                       sx={{
                         position: 'relative',
-                        borderRadius: 2,
+                        borderRadius: 1.25,
                         overflow: 'hidden',
                         borderColor: 'divider',
                         transition: 'box-shadow 0.2s ease, border-color 0.2s ease, transform 0.2s ease',
                         '&:hover': {
                           borderColor: 'primary.main',
-                          transform: 'translateY(-3px)',
+                          transform: 'translateY(-2px)',
                           boxShadow: t =>
-                            t.palette.mode === 'dark' ? '0 14px 40px rgba(0,0,0,0.55)' : '0 14px 36px rgba(0,0,0,0.1)',
+                            t.palette.mode === 'dark' ? '0 8px 24px rgba(0,0,0,0.45)' : '0 8px 20px rgba(0,0,0,0.08)',
                         },
                       }}
                     >
@@ -659,11 +665,11 @@ export const AccountPage: React.FC = () => {
                           <Box
                             sx={{
                               position: 'relative',
-                              aspectRatio: '3/4',
+                              aspectRatio: '2/3',
                               background: t =>
                                 t.palette.mode === 'dark'
-                                  ? 'linear-gradient(155deg, rgba(245,165,36,0.14) 0%, rgba(30,30,30,1) 42%, rgba(18,18,18,1) 100%)'
-                                  : 'linear-gradient(155deg, rgba(245,165,36,0.22) 0%, rgba(255,255,255,0.95) 45%, #f0f2f7 100%)',
+                                  ? 'linear-gradient(155deg, rgba(245,165,36,0.12) 0%, rgba(30,30,30,1) 42%, rgba(18,18,18,1) 100%)'
+                                  : 'linear-gradient(155deg, rgba(245,165,36,0.18) 0%, rgba(255,255,255,0.95) 45%, #eef0f5 100%)',
                             }}
                           >
                             <Typography
@@ -675,7 +681,7 @@ export const AccountPage: React.FC = () => {
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                fontSize: { xs: '2rem', sm: '2.35rem' },
+                                fontSize: { xs: '1.35rem', sm: '1.5rem' },
                                 userSelect: 'none',
                               }}
                             >
@@ -690,25 +696,44 @@ export const AccountPage: React.FC = () => {
                                 display: 'flex',
                                 flexDirection: 'row',
                                 alignItems: 'center',
-                                gap: 0.5,
-                                py: 0.75,
-                                px: 1,
-                                background: 'linear-gradient(transparent, rgba(0,0,0,0.65))',
+                                gap: 0.35,
+                                py: 0.4,
+                                px: 0.6,
+                                background: 'linear-gradient(transparent, rgba(0,0,0,0.62))',
                                 color: 'common.white',
                               }}
                             >
-                              <MenuBookOutlined sx={{ fontSize: 16, opacity: 0.95 }} />
-                              <Typography variant="caption" sx={{ fontWeight: 800, letterSpacing: '0.02em' }}>
-                                Xem truyện
+                              <MenuBookOutlined sx={{ fontSize: 12, opacity: 0.95, flexShrink: 0 }} />
+                              <Typography
+                                sx={{
+                                  fontWeight: 800,
+                                  fontSize: '0.625rem',
+                                  lineHeight: 1.2,
+                                  letterSpacing: '0.01em',
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis',
+                                  whiteSpace: 'nowrap',
+                                  minWidth: 0,
+                                }}
+                              >
+                                Xem
                               </Typography>
-                              <ArrowForwardIosRounded sx={{ fontSize: 11, ml: 'auto', opacity: 0.85 }} />
+                              <ArrowForwardIosRounded sx={{ fontSize: 9, ml: 'auto', opacity: 0.85, flexShrink: 0 }} />
                             </Box>
                           </Box>
-                          <CardContent sx={{ py: 1.5, px: 1.75 }}>
-                            <Typography variant="subtitle2" noWrap title={comic.title} sx={{ fontWeight: 800 }}>
+                          <CardContent sx={{ py: 0.75, px: 0.75, '&:last-child': { pb: 0.75 } }}>
+                            <Typography
+                              noWrap
+                              title={comic.title}
+                              sx={{ fontWeight: 800, fontSize: '0.72rem', lineHeight: 1.25, display: 'block' }}
+                            >
                               {comic.title}
                             </Typography>
-                            <Typography variant="caption" color="primary" noWrap sx={{ fontWeight: 700, display: 'block', mt: 0.35 }}>
+                            <Typography
+                              noWrap
+                              color="primary"
+                              sx={{ fontWeight: 700, fontSize: '0.625rem', display: 'block', mt: 0.2, lineHeight: 1.2 }}
+                            >
                               {comic.chapter}
                             </Typography>
                           </CardContent>
@@ -720,11 +745,13 @@ export const AccountPage: React.FC = () => {
                             color="primary"
                             sx={{
                               position: 'absolute',
-                              top: 10,
-                              left: 10,
-                              fontWeight: 800,
+                              top: 4,
+                              left: 4,
                               zIndex: 1,
+                              height: 18,
+                              fontWeight: 800,
                               boxShadow: 1,
+                              '& .MuiChip-label': { px: 0.5, fontSize: '0.6rem', py: 0 },
                             }}
                           />
                         ) : null}
@@ -738,15 +765,18 @@ export const AccountPage: React.FC = () => {
                           }}
                           sx={{
                             position: 'absolute',
-                            top: 8,
-                            right: 8,
+                            top: 2,
+                            right: 2,
                             zIndex: 2,
-                            bgcolor: 'rgba(0,0,0,0.5)',
+                            width: 26,
+                            height: 26,
+                            p: 0.25,
+                            bgcolor: 'rgba(0,0,0,0.48)',
                             color: 'common.white',
                             '&:hover': { bgcolor: 'error.main' },
                           }}
                         >
-                          <CloseRounded fontSize="small" />
+                          <CloseRounded sx={{ fontSize: 16 }} />
                         </IconButton>
                       </Box>
                     </Card>
