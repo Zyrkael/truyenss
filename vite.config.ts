@@ -9,6 +9,14 @@ const r = (p: string) => path.resolve(__dirname, p)
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  css: {
+    preprocessorOptions: {
+      scss: {
+        quietDeps: true,
+        silenceDeprecations: ['color-functions', 'global-builtin', 'import'],
+      },
+    },
+  },
   resolve: {
     alias: [
       { find: '~utils', replacement: r('src/utils') },
