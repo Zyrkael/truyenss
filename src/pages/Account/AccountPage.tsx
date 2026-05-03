@@ -1,4 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
+import AccessTimeOutlined from '@mui/icons-material/AccessTimeOutlined'
+import ArrowForwardIosRounded from '@mui/icons-material/ArrowForwardIosRounded'
 import BookmarkBorderOutlined from '@mui/icons-material/BookmarkBorderOutlined'
 import CalendarMonthOutlined from '@mui/icons-material/CalendarMonthOutlined'
 import CloseRounded from '@mui/icons-material/CloseRounded'
@@ -6,6 +8,7 @@ import DeleteOutlined from '@mui/icons-material/DeleteOutlined'
 import EditOutlined from '@mui/icons-material/EditOutlined'
 import HistoryOutlined from '@mui/icons-material/HistoryOutlined'
 import LockOutlined from '@mui/icons-material/LockOutlined'
+import MenuBookOutlined from '@mui/icons-material/MenuBookOutlined'
 import PersonOutlined from '@mui/icons-material/PersonOutlined'
 import SaveOutlined from '@mui/icons-material/SaveOutlined'
 import StarBorderOutlined from '@mui/icons-material/StarBorderOutlined'
@@ -16,6 +19,7 @@ import {
   Breadcrumbs,
   Button,
   Card,
+  CardActionArea,
   CardContent,
   Chip,
   Container,
@@ -25,9 +29,6 @@ import {
   IconButton,
   InputLabel,
   LinearProgress,
-  List,
-  ListItem,
-  ListItemAvatar,
   MenuItem,
   Paper,
   Radio,
@@ -84,20 +85,20 @@ const MOCK_USER = {
 }
 
 const MOCK_FOLLOWING = [
-  { id: 1, title: 'Naruto', chapter: 'Chương 700', badge: 'Mới', emoji: '🍥' },
-  { id: 2, title: 'One Piece', chapter: 'Chương 1115', badge: 'Hot', emoji: '⚓' },
-  { id: 3, title: 'Demon Slayer', chapter: 'Chương 205', badge: null, emoji: '🗡️' },
-  { id: 4, title: 'Jujutsu Kaisen', chapter: 'Chương 268', badge: 'Mới', emoji: '🌀' },
-  { id: 5, title: 'Dragon Ball', chapter: 'Chương 519', badge: null, emoji: '🐉' },
-  { id: 6, title: 'Attack on Titan', chapter: 'Chương 139', badge: null, emoji: '⚡' },
+  { id: 1, title: 'Naruto', slug: 'naruto', chapter: 'Chương 700', badge: 'Mới', emoji: '🍥' },
+  { id: 2, title: 'One Piece', slug: 'one-piece', chapter: 'Chương 1115', badge: 'Hot', emoji: '⚓' },
+  { id: 3, title: 'Demon Slayer', slug: 'demon-slayer', chapter: 'Chương 205', badge: null, emoji: '🗡️' },
+  { id: 4, title: 'Jujutsu Kaisen', slug: 'jujutsu-kaisen', chapter: 'Chương 268', badge: 'Mới', emoji: '🌀' },
+  { id: 5, title: 'Dragon Ball', slug: 'dragon-ball', chapter: 'Chương 519', badge: null, emoji: '🐉' },
+  { id: 6, title: 'Attack on Titan', slug: 'attack-on-titan', chapter: 'Chương 139', badge: null, emoji: '⚡' },
 ]
 
 const MOCK_HISTORY = [
-  { id: 1, title: 'One Piece', chapter: 'Chương 1114', time: '2 giờ trước', progress: 88, emoji: '⚓' },
-  { id: 2, title: 'Naruto', chapter: 'Chương 699', time: 'Hôm qua', progress: 65, emoji: '🍥' },
-  { id: 3, title: 'Demon Slayer', chapter: 'Chương 200', time: '2 ngày trước', progress: 42, emoji: '🗡️' },
-  { id: 4, title: 'Jujutsu Kaisen', chapter: 'Chương 265', time: '3 ngày trước', progress: 75, emoji: '🌀' },
-  { id: 5, title: 'Dragon Ball', chapter: 'Chương 510', time: '1 tuần trước', progress: 30, emoji: '🐉' },
+  { id: 1, title: 'One Piece', slug: 'one-piece', chapter: 'Chương 1114', time: '2 giờ trước', progress: 88, emoji: '⚓' },
+  { id: 2, title: 'Naruto', slug: 'naruto', chapter: 'Chương 699', time: 'Hôm qua', progress: 65, emoji: '🍥' },
+  { id: 3, title: 'Demon Slayer', slug: 'demon-slayer', chapter: 'Chương 200', time: '2 ngày trước', progress: 42, emoji: '🗡️' },
+  { id: 4, title: 'Jujutsu Kaisen', slug: 'jujutsu-kaisen', chapter: 'Chương 265', time: '3 ngày trước', progress: 75, emoji: '🌀' },
+  { id: 5, title: 'Dragon Ball', slug: 'dragon-ball', chapter: 'Chương 510', time: '1 tuần trước', progress: 30, emoji: '🐉' },
 ]
 
 function getPasswordStrength(pw: string): { score: number; label: string; color: string } {
@@ -575,31 +576,60 @@ export const AccountPage: React.FC = () => {
             </TabPanel>
 
             <TabPanel value={activeTab} id="following">
-              <Stack direction="row" spacing={1} sx={{ mb: 2, alignItems: 'center' }}>
-                <Box
-                  sx={{
-                    width: 4,
-                    height: 22,
-                    borderRadius: 0.5,
-                    background: t => `linear-gradient(180deg, ${t.palette.primary.light}, ${t.palette.primary.dark})`,
-                  }}
-                />
-                <Typography variant="subtitle1" component="span" sx={{ fontWeight: 800 }}>
-                  Truyện đang theo dõi
+              <Stack spacing={1} sx={{ mb: 2.5 }}>
+                <Stack direction="row" spacing={1} sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
+                  <Box
+                    sx={{
+                      width: 4,
+                      height: 22,
+                      borderRadius: 0.5,
+                      background: t => `linear-gradient(180deg, ${t.palette.primary.light}, ${t.palette.primary.dark})`,
+                    }}
+                  />
+                  <Typography variant="subtitle1" sx={{ fontWeight: 800 }}>
+                    Truyện đang theo dõi
+                  </Typography>
+                  <Chip size="small" label={following.length} color="primary" variant="outlined" sx={{ fontWeight: 700 }} />
+                </Stack>
+                <Typography variant="body2" color="text.secondary" sx={{ pl: { xs: 0, sm: 2 } }}>
+                  Chạm thẻ để mở trang truyện. Dữ liệu mẫu — API thật sẽ thay khi backend sẵn sàng.
                 </Typography>
-                <Chip size="small" label={following.length} color="primary" variant="outlined" />
               </Stack>
 
               {following.length === 0 ? (
-                <Typography color="text.secondary" sx={{ textAlign: 'center', py: 6 }}>
-                  Bạn chưa theo dõi truyện nào. Hãy khám phá kho truyện ngay!
-                </Typography>
+                <Paper
+                  variant="outlined"
+                  sx={{
+                    py: 5,
+                    px: 3,
+                    textAlign: 'center',
+                    borderStyle: 'dashed',
+                    borderRadius: 2,
+                    bgcolor: t => (t.palette.mode === 'dark' ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)'),
+                  }}
+                >
+                  <BookmarkBorderOutlined sx={{ fontSize: 52, color: 'text.disabled', mb: 1.5 }} />
+                  <Typography variant="h6" sx={{ fontWeight: 800, mb: 0.5 }}>
+                    Chưa có truyện theo dõi
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2.5, maxWidth: 400, mx: 'auto' }}>
+                    Lưu truyện yêu thích để theo dõi chương mới và đọc tiếp nhanh hơn.
+                  </Typography>
+                  <Button component={RouterLink} to="/the-loai" variant="contained" color="primary" startIcon={<MenuBookOutlined />}>
+                    Khám phá thể loại
+                  </Button>
+                </Paper>
               ) : (
                 <Box
                   sx={{
                     display: 'grid',
-                    gridTemplateColumns: { xs: 'repeat(2, 1fr)', sm: 'repeat(3, 1fr)', md: 'repeat(4, 1fr)', lg: 'repeat(6, 1fr)' },
-                    gap: 2,
+                    gap: 2.5,
+                    gridTemplateColumns: {
+                      xs: 'repeat(2, minmax(0, 1fr))',
+                      sm: 'repeat(3, minmax(0, 1fr))',
+                      md: 'repeat(3, minmax(0, 1fr))',
+                      lg: 'repeat(4, minmax(0, 1fr))',
+                    },
                   }}
                 >
                   {following.map(comic => (
@@ -609,36 +639,109 @@ export const AccountPage: React.FC = () => {
                       sx={{
                         position: 'relative',
                         borderRadius: 2,
-                        transition: 'box-shadow 0.2s, transform 0.2s',
-                        '&:hover': { boxShadow: 4, transform: 'translateY(-2px)' },
+                        overflow: 'hidden',
+                        borderColor: 'divider',
+                        transition: 'box-shadow 0.2s ease, border-color 0.2s ease, transform 0.2s ease',
+                        '&:hover': {
+                          borderColor: 'primary.main',
+                          transform: 'translateY(-3px)',
+                          boxShadow: t =>
+                            t.palette.mode === 'dark' ? '0 14px 40px rgba(0,0,0,0.55)' : '0 14px 36px rgba(0,0,0,0.1)',
+                        },
                       }}
                     >
-                      <Box sx={{ position: 'relative', aspectRatio: '2/3', bgcolor: 'action.hover' }}>
-                        <Typography
-                          component="div"
-                          sx={{
-                            position: 'absolute',
-                            inset: 0,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            fontSize: '2rem',
-                          }}
+                      <Box sx={{ position: 'relative' }}>
+                        <CardActionArea
+                          component={RouterLink}
+                          to={`/truyen/${comic.slug}`}
+                          sx={{ display: 'block', textAlign: 'left' }}
                         >
-                          {comic.emoji}
-                        </Typography>
+                          <Box
+                            sx={{
+                              position: 'relative',
+                              aspectRatio: '3/4',
+                              background: t =>
+                                t.palette.mode === 'dark'
+                                  ? 'linear-gradient(155deg, rgba(245,165,36,0.14) 0%, rgba(30,30,30,1) 42%, rgba(18,18,18,1) 100%)'
+                                  : 'linear-gradient(155deg, rgba(245,165,36,0.22) 0%, rgba(255,255,255,0.95) 45%, #f0f2f7 100%)',
+                            }}
+                          >
+                            <Typography
+                              component="div"
+                              aria-hidden
+                              sx={{
+                                position: 'absolute',
+                                inset: 0,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: { xs: '2rem', sm: '2.35rem' },
+                                userSelect: 'none',
+                              }}
+                            >
+                              {comic.emoji}
+                            </Typography>
+                            <Box
+                              sx={{
+                                position: 'absolute',
+                                bottom: 0,
+                                left: 0,
+                                right: 0,
+                                display: 'flex',
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                gap: 0.5,
+                                py: 0.75,
+                                px: 1,
+                                background: 'linear-gradient(transparent, rgba(0,0,0,0.65))',
+                                color: 'common.white',
+                              }}
+                            >
+                              <MenuBookOutlined sx={{ fontSize: 16, opacity: 0.95 }} />
+                              <Typography variant="caption" sx={{ fontWeight: 800, letterSpacing: '0.02em' }}>
+                                Xem truyện
+                              </Typography>
+                              <ArrowForwardIosRounded sx={{ fontSize: 11, ml: 'auto', opacity: 0.85 }} />
+                            </Box>
+                          </Box>
+                          <CardContent sx={{ py: 1.5, px: 1.75 }}>
+                            <Typography variant="subtitle2" noWrap title={comic.title} sx={{ fontWeight: 800 }}>
+                              {comic.title}
+                            </Typography>
+                            <Typography variant="caption" color="primary" noWrap sx={{ fontWeight: 700, display: 'block', mt: 0.35 }}>
+                              {comic.chapter}
+                            </Typography>
+                          </CardContent>
+                        </CardActionArea>
                         {comic.badge ? (
-                          <Chip label={comic.badge} size="small" color="primary" sx={{ position: 'absolute', top: 8, left: 8, fontWeight: 800 }} />
+                          <Chip
+                            label={comic.badge}
+                            size="small"
+                            color="primary"
+                            sx={{
+                              position: 'absolute',
+                              top: 10,
+                              left: 10,
+                              fontWeight: 800,
+                              zIndex: 1,
+                              boxShadow: 1,
+                            }}
+                          />
                         ) : null}
                         <IconButton
                           size="small"
                           aria-label={`Bỏ theo dõi ${comic.title}`}
-                          onClick={() => handleUnfollow(comic.id)}
+                          onClick={e => {
+                            e.preventDefault()
+                            e.stopPropagation()
+                            handleUnfollow(comic.id)
+                          }}
                           sx={{
                             position: 'absolute',
-                            top: 4,
-                            right: 4,
-                            bgcolor: 'rgba(0,0,0,0.55)',
+                            top: 8,
+                            right: 8,
+                            zIndex: 2,
+                            bgcolor: 'rgba(0,0,0,0.5)',
                             color: 'common.white',
                             '&:hover': { bgcolor: 'error.main' },
                           }}
@@ -646,14 +749,6 @@ export const AccountPage: React.FC = () => {
                           <CloseRounded fontSize="small" />
                         </IconButton>
                       </Box>
-                      <CardContent sx={{ py: 1.25, px: 1.5 }}>
-                        <Typography variant="body2" noWrap title={comic.title} sx={{ fontWeight: 700 }}>
-                          {comic.title}
-                        </Typography>
-                        <Typography variant="caption" color="primary" noWrap sx={{ fontWeight: 600 }}>
-                          {comic.chapter}
-                        </Typography>
-                      </CardContent>
                     </Card>
                   ))}
                 </Box>
@@ -661,73 +756,174 @@ export const AccountPage: React.FC = () => {
             </TabPanel>
 
             <TabPanel value={activeTab} id="history">
-              <Stack direction="row" sx={{ mb: 2, alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2 }}>
-                <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-                  <Box
-                    sx={{
-                      width: 4,
-                      height: 22,
-                      borderRadius: 0.5,
-                      background: t => `linear-gradient(180deg, ${t.palette.primary.light}, ${t.palette.primary.dark})`,
-                    }}
-                  />
-                  <Typography variant="subtitle1" component="span" sx={{ fontWeight: 800 }}>
-                    Lịch sử đọc
+              <Stack
+                direction={{ xs: 'column', sm: 'row' }}
+                spacing={2}
+                sx={{ mb: 2.5, alignItems: { xs: 'stretch', sm: 'flex-start' }, justifyContent: 'space-between' }}
+              >
+                <Stack spacing={1} sx={{ flex: 1, minWidth: 0 }}>
+                  <Stack direction="row" spacing={1} sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
+                    <Box
+                      sx={{
+                        width: 4,
+                        height: 22,
+                        borderRadius: 0.5,
+                        background: t => `linear-gradient(180deg, ${t.palette.primary.light}, ${t.palette.primary.dark})`,
+                      }}
+                    />
+                    <Typography variant="subtitle1" sx={{ fontWeight: 800 }}>
+                      Lịch sử đọc
+                    </Typography>
+                    <Chip size="small" label={MOCK_HISTORY.length} color="primary" variant="outlined" sx={{ fontWeight: 700 }} />
+                  </Stack>
+                  <Typography variant="body2" color="text.secondary" sx={{ pl: { xs: 0, sm: 2 } }}>
+                    Tiến độ trang hiện tại (mẫu). Chạm một dòng để mở lại truyện.
                   </Typography>
-                  <Chip size="small" label={MOCK_HISTORY.length} color="primary" variant="outlined" />
                 </Stack>
-                <Button variant="outlined" size="small" color="inherit" startIcon={<DeleteOutlined />} onClick={() => showToast('Đã xóa toàn bộ lịch sử.')}>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  color="inherit"
+                  startIcon={<DeleteOutlined />}
+                  onClick={() => showToast('Đã xóa toàn bộ lịch sử.')}
+                  sx={{ alignSelf: { xs: 'stretch', sm: 'flex-start' }, flexShrink: 0 }}
+                >
                   Xóa tất cả
                 </Button>
               </Stack>
 
               {MOCK_HISTORY.length === 0 ? (
-                <Typography color="text.secondary" sx={{ textAlign: 'center', py: 6 }}>
-                  Chưa có lịch sử đọc. Bắt đầu đọc truyện ngay!
-                </Typography>
+                <Paper
+                  variant="outlined"
+                  sx={{
+                    py: 5,
+                    px: 3,
+                    textAlign: 'center',
+                    borderStyle: 'dashed',
+                    borderRadius: 2,
+                    bgcolor: t => (t.palette.mode === 'dark' ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)'),
+                  }}
+                >
+                  <HistoryOutlined sx={{ fontSize: 52, color: 'text.disabled', mb: 1.5 }} />
+                  <Typography variant="h6" sx={{ fontWeight: 800, mb: 0.5 }}>
+                    Chưa có lịch sử đọc
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2.5, maxWidth: 400, mx: 'auto' }}>
+                    Các chương bạn mở sẽ xuất hiện ở đây để tiếp tục đọc nhanh.
+                  </Typography>
+                  <Button component={RouterLink} to="/" variant="contained" color="primary" startIcon={<MenuBookOutlined />}>
+                    Về trang chủ
+                  </Button>
+                </Paper>
               ) : (
-                <List disablePadding>
-                  {MOCK_HISTORY.map((item, idx) => (
-                    <React.Fragment key={item.id}>
-                      {idx > 0 ? <Divider component="li" /> : null}
-                      <ListItem
+                <Stack spacing={1.25}>
+                  {MOCK_HISTORY.map(item => (
+                    <Paper
+                      key={item.id}
+                      component={RouterLink}
+                      to={`/truyen/${item.slug}`}
+                      variant="outlined"
+                      sx={{
+                        p: { xs: 1.5, sm: 2 },
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: { xs: 1.5, sm: 2 },
+                        textDecoration: 'none',
+                        color: 'inherit',
+                        borderRadius: 2,
+                        borderColor: 'divider',
+                        transition: 'border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease',
+                        '&:hover': {
+                          borderColor: 'primary.main',
+                          bgcolor: 'action.hover',
+                          boxShadow: t => (t.palette.mode === 'dark' ? '0 0 0 1px rgba(245,165,36,0.35)' : '0 8px 24px rgba(0,0,0,0.06)'),
+                        },
+                      }}
+                    >
+                      <Box
                         sx={{
-                          py: 1.5,
-                          px: 1,
-                          borderRadius: 1,
-                          '&:hover': { bgcolor: 'action.hover' },
+                          width: { xs: 48, sm: 56 },
+                          height: { xs: 64, sm: 72 },
+                          flexShrink: 0,
+                          borderRadius: 1.5,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: { xs: '1.25rem', sm: '1.4rem' },
+                          bgcolor: 'action.selected',
+                          border: 1,
+                          borderColor: 'divider',
+                          background: t =>
+                            t.palette.mode === 'dark'
+                              ? 'linear-gradient(145deg, rgba(245,165,36,0.1), rgba(40,40,40,1))'
+                              : 'linear-gradient(145deg, rgba(245,165,36,0.12), #fff)',
                         }}
                       >
-                        <ListItemAvatar>
-                          <Avatar variant="rounded" sx={{ width: 48, height: 64, bgcolor: 'action.selected', fontSize: '1.25rem' }}>
-                            {item.emoji}
-                          </Avatar>
-                        </ListItemAvatar>
-                        <Box sx={{ flex: 1, minWidth: 0, mr: 2 }}>
-                          <Typography variant="body2" noWrap sx={{ fontWeight: 700 }}>
-                            {item.title}
-                          </Typography>
-                          <Typography variant="caption" color="primary" noWrap sx={{ fontWeight: 600, display: 'block' }}>
-                            {item.chapter}
-                          </Typography>
-                          <Typography variant="caption" color="text.secondary">
-                            {item.time}
-                          </Typography>
+                        {item.emoji}
+                      </Box>
+                      <Box sx={{ flex: 1, minWidth: 0 }}>
+                        <Typography variant="subtitle2" noWrap sx={{ fontWeight: 800 }}>
+                          {item.title}
+                        </Typography>
+                        <Box
+                          sx={{
+                            mt: 0.75,
+                            display: 'flex',
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            flexWrap: 'wrap',
+                            gap: 1,
+                          }}
+                        >
+                          <Chip
+                            label={item.chapter}
+                            size="small"
+                            variant="outlined"
+                            color="primary"
+                            sx={{ fontWeight: 700, height: 24, maxWidth: '100%' }}
+                          />
+                          <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 0.5, color: 'text.secondary' }}>
+                            <AccessTimeOutlined sx={{ fontSize: 17 }} />
+                            <Typography variant="caption" sx={{ fontWeight: 600 }}>
+                              {item.time}
+                            </Typography>
+                          </Box>
                         </Box>
-                        <Box sx={{ width: 72, flexShrink: 0, textAlign: 'right' }}>
+                      </Box>
+                      <Box
+                        sx={{
+                          flexShrink: 0,
+                          minWidth: { xs: 88, sm: 132 },
+                          display: 'flex',
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          gap: 1,
+                        }}
+                      >
+                        <Box sx={{ flex: 1, minWidth: { xs: 72, sm: 100 } }}>
+                          <Typography
+                            variant="caption"
+                            color="text.secondary"
+                            sx={{ fontWeight: 700, display: 'block', mb: 0.5, textAlign: 'right' }}
+                          >
+                            {item.progress}%
+                          </Typography>
                           <LinearProgress
                             variant="determinate"
                             value={item.progress}
-                            sx={{ height: 4, borderRadius: 99, mb: 0.5, bgcolor: 'action.hover' }}
+                            sx={{
+                              height: 6,
+                              borderRadius: 99,
+                              bgcolor: 'action.hover',
+                              '& .MuiLinearProgress-bar': { borderRadius: 99, bgcolor: 'primary.main' },
+                            }}
                           />
-                          <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 700 }}>
-                            {item.progress}%
-                          </Typography>
                         </Box>
-                      </ListItem>
-                    </React.Fragment>
+                        <ArrowForwardIosRounded sx={{ fontSize: 12, color: 'text.disabled', display: { xs: 'none', sm: 'block' } }} />
+                      </Box>
+                    </Paper>
                   ))}
-                </List>
+                </Stack>
               )}
             </TabPanel>
           </Box>
