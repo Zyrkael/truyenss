@@ -1,5 +1,5 @@
 import React from 'react'
-import { Container, Button } from 'react-bootstrap'
+import { Box, Button, Container, Typography } from '@mui/material'
 import { Helmet } from 'react-helmet-async'
 import { useNavigate } from 'react-router-dom'
 
@@ -11,33 +11,42 @@ export const Forbidden: React.FC = () => {
       <Helmet>
         <title>403 - Không có quyền truy cập</title>
       </Helmet>
-      <Container
-        className="d-flex flex-column justify-content-center align-items-center text-center py-5"
-        style={{ minHeight: '60vh' }}
-      >
-        <h1
-          style={{
-            fontSize: '6rem',
-            fontWeight: 800,
-            color: '#e74c3c',
-            textShadow: '0 4px 15px rgba(231, 76, 60, 0.4)',
+      <Container maxWidth="sm">
+        <Box
+          sx={{
+            minHeight: '60vh',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center',
+            py: 5,
           }}
         >
-          403
-        </h1>
-        <h2 className="mb-4">Khu vực cấm thuật!</h2>
-        <p style={{ color: 'var(--app-text-muted)', maxWidth: '500px', marginBottom: '30px' }}>
-          Bạn không có đủ ma lực (quyền) để tiến vào khu vực này. Vui lòng đăng nhập bằng tài khoản
-          có thẩm quyền cao hơn.
-        </p>
-        <Button
-          variant="danger"
-          size="lg"
-          onClick={() => navigate('/')}
-          style={{ borderRadius: '25px', padding: '10px 30px' }}
-        >
-          Trở về an toàn
-        </Button>
+          <Typography
+            component="h1"
+            sx={{
+              fontSize: { xs: '4.5rem', sm: '6rem' },
+              fontWeight: 800,
+              color: 'error.main',
+              textShadow: theme => `0 4px 24px ${theme.palette.error.main}55`,
+              lineHeight: 1,
+              mb: 1,
+            }}
+          >
+            403
+          </Typography>
+          <Typography variant="h5" component="h2" sx={{ fontWeight: 700, mb: 2 }}>
+            Khu vực cấm thuật!
+          </Typography>
+          <Typography color="text.secondary" sx={{ maxWidth: 500, mb: 4 }}>
+            Bạn không có đủ ma lực (quyền) để tiến vào khu vực này. Vui lòng đăng nhập bằng tài khoản có thẩm quyền
+            cao hơn.
+          </Typography>
+          <Button variant="contained" color="error" size="large" onClick={() => navigate('/')} sx={{ borderRadius: 999, px: 4 }}>
+            Trở về an toàn
+          </Button>
+        </Box>
       </Container>
     </>
   )

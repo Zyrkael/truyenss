@@ -1,12 +1,20 @@
 import React, { useCallback, useMemo } from 'react'
-import { Container, Pagination, Spinner } from 'react-bootstrap'
+import {
+  Box,
+  Chip,
+  CircularProgress,
+  Container,
+  Pagination,
+  Paper,
+  Stack,
+  Typography,
+} from '@mui/material'
 import { Helmet } from 'react-helmet-async'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { Link as RouterLink, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { Skeleton } from '~components/Skeleton'
 import { getComicCategories, getComicsByCategory } from '~services/comic'
 import type { Comic } from '~types/comic'
-import styles from './Category.module.scss'
 
 const ROUTE_CATEGORIES = '/the-loai'
 
@@ -40,6 +48,17 @@ const comicStatusVi = (s: Comic['status']) => {
   if (s === 'ongoing') return 'Đang cập nhật'
   return 'Tạm ngưng'
 }
+
+const filterRowSx = {
+  display: 'grid',
+  gridTemplateColumns: { xs: '1fr', sm: 'minmax(100px, 150px) 1fr' },
+  gap: { xs: 1, sm: '10px 16px' },
+  p: '12px 14px',
+  borderBottom: 1,
+  borderColor: 'divider',
+  alignItems: 'start',
+  '&:last-of-type': { borderBottom: 'none' },
+} as const
 
 export const Category: React.FC = () => {
   const navigate = useNavigate()
@@ -102,249 +121,331 @@ export const Category: React.FC = () => {
   }
 
   const listSkeleton = (
-    <div className={styles.list}>
+    <Stack spacing={2}>
       {Array.from({ length: 8 }).map((_, i) => (
-        <div key={i} className={styles.comicRow}>
-          <Skeleton width="112px" height="149px" borderRadius="8px" />
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <Paper
+          key={i}
+          elevation={0}
+          sx={{
+            p: 2,
+            display: 'grid',
+            gridTemplateColumns: { xs: '88px 1fr', sm: '112px 1fr' },
+            gap: { xs: 1.5, sm: 2 },
+            bgcolor: 'background.paper',
+            border: 1,
+            borderColor: 'divider',
+            borderRadius: 1.5,
+          }}
+        >
+          <Skeleton width="100%" height={149} borderRadius="8px" />
+          <Stack spacing={1} sx={{ flex: 1, minWidth: 0 }}>
             <Skeleton height="14px" width="40%" borderRadius="4px" />
             <Skeleton height="22px" width="85%" borderRadius="4px" />
             <Skeleton height="14px" width="60%" borderRadius="4px" />
-          </div>
-        </div>
+          </Stack>
+        </Paper>
       ))}
-    </div>
+    </Stack>
   )
 
   return (
     <>
       <Helmet>
         <title>
-          {slug && categoryResult
-            ? `${categoryResult.title} - TruyenSS`
-            : 'Thể loại truyện - TruyenSS'}
+          {slug && categoryResult ? `${categoryResult.title} - TruyenSS` : 'Thể loại truyện - TruyenSS'}
         </title>
       </Helmet>
 
-      <Container className="py-3 py-md-4">
+      <Container maxWidth="lg" sx={{ py: { xs: 2, md: 3 } }}>
         {!slug && (
           <>
-            <div className={styles.hero}>
-              <h1 className={styles.title}>Thể loại truyện</h1>
-              <p className={styles.subtitle}>
+            <Paper
+              elevation={0}
+              sx={{
+                py: 3.5,
+                px: 2.5,
+                textAlign: 'center',
+                bgcolor: 'background.paper',
+                border: 1,
+                borderColor: 'divider',
+                borderRadius: 1.75,
+                mb: 3.5,
+              }}
+            >
+              <Typography variant="h4" component="h1" sx={{ fontWeight: 800, mb: 1, fontSize: { xs: '1.5rem', sm: 'clamp(1.5rem, 4vw, 2rem)' } }}>
+                Thể loại truyện
+              </Typography>
+              <Typography color="text.secondary" sx={{ m: 0, maxWidth: 560, mx: 'auto', lineHeight: 1.55 }}>
                 Chọn thể loại để xem danh sách truyện. Giao diện danh sách theo từng thể loại được làm tương tự TruyenQQ.
-              </p>
-            </div>
+              </Typography>
+            </Paper>
 
-            {isError && <p className={styles.errorText}>Không thể tải thể loại. Vui lòng thử lại sau.</p>}
+            {isError ? (
+              <Typography color="text.secondary" sx={{ textAlign: 'center' }}>
+                Không thể tải thể loại. Vui lòng thử lại sau.
+              </Typography>
+            ) : null}
 
-            {isLoading && (
-              <div className={styles.categoryGrid}>
+            {isLoading ? (
+              <Stack direction="row" sx={{ mb: 4, gap: 1, flexWrap: 'wrap', justifyContent: 'center' }}>
                 {Array.from({ length: 24 }).map((_, i) => (
                   <Skeleton key={i} width="100px" height="36px" borderRadius="999px" />
                 ))}
-              </div>
-            )}
+              </Stack>
+            ) : null}
 
-            {!isLoading && !isError && (
-              <div className={styles.categoryGrid}>
+            {!isLoading && !isError ? (
+              <Stack direction="row" sx={{ mb: 4, gap: 1, flexWrap: 'wrap', justifyContent: 'center' }}>
                 {categories.map(category => (
-                  <Link
+                  <Chip
                     key={category.id}
+                    component={RouterLink}
                     to={`${ROUTE_CATEGORIES}/${category.slug}`}
-                    className={styles.categoryBadge}
-                  >
-                    {category.name}
-                  </Link>
+                    label={category.name}
+                    clickable
+                    variant="outlined"
+                    sx={{ fontWeight: 600 }}
+                  />
                 ))}
-              </div>
-            )}
+              </Stack>
+            ) : null}
           </>
         )}
 
         {slug && (
           <>
-            <header className={styles.pageHead}>
-              <h1 className={styles.pageTitle}>
+            <Box component="header" sx={{ mb: 2.5 }}>
+              <Typography variant="h4" component="h1" sx={{ fontWeight: 800, mb: 1, fontSize: { xs: '1.35rem', sm: 'clamp(1.35rem, 3vw, 1.75rem)' } }}>
                 Truyện {categoryResult?.title ?? '…'}
-              </h1>
-              <p className={styles.pageLead}>
+              </Typography>
+              <Typography color="text.secondary" sx={{ m: 0, maxWidth: 720, lineHeight: 1.6 }}>
                 Danh sách truyện thuộc thể loại này. Dùng bộ lọc bên dưới để thu hẹp (nếu API hỗ trợ tham số tương
                 ứng).
-              </p>
-            </header>
+              </Typography>
+            </Box>
 
-            <div className={styles.filterPanel}>
-              <div className={styles.filterRow}>
-                <div className={styles.filterKey}>Thể loại truyện</div>
-                <div className={styles.filterVal}>
+            <Paper
+              elevation={0}
+              sx={{
+                bgcolor: 'background.paper',
+                border: 1,
+                borderColor: 'divider',
+                borderRadius: 1.5,
+                overflow: 'hidden',
+                mb: 3,
+              }}
+            >
+              <Box sx={filterRowSx}>
+                <Typography variant="caption" sx={{ fontWeight: 800, letterSpacing: '0.08em', color: 'text.secondary', pt: 0.5 }}>
+                  Thể loại truyện
+                </Typography>
+                <Stack direction="row" sx={{ gap: 0.75, flexWrap: 'wrap', alignItems: 'center' }}>
                   {isLoading ? (
-                    <Spinner animation="border" size="sm" variant="warning" />
+                    <CircularProgress size={22} color="primary" />
                   ) : (
-                    <>
-                      {categories.map(cat => (
-                        <Link
-                          key={cat.id}
-                          to={`${ROUTE_CATEGORIES}/${cat.slug}`}
-                          className={`${styles.filterLink} ${styles.catPill} ${cat.slug === slug ? styles.filterLinkActive : ''}`}
-                        >
-                          {cat.name}
-                        </Link>
-                      ))}
-                    </>
+                    categories.map(cat => (
+                      <Chip
+                        key={cat.id}
+                        component={RouterLink}
+                        to={`${ROUTE_CATEGORIES}/${cat.slug}`}
+                        label={cat.name}
+                        clickable
+                        size="small"
+                        color={cat.slug === slug ? 'primary' : 'default'}
+                        variant={cat.slug === slug ? 'filled' : 'outlined'}
+                        sx={{ fontWeight: 600, fontSize: '0.78rem' }}
+                      />
+                    ))
                   )}
-                </div>
-              </div>
+                </Stack>
+              </Box>
 
-              <div className={styles.filterRow}>
-                <div className={styles.filterKey}>Tình trạng</div>
-                <div className={styles.filterVal}>
+              <Box sx={filterRowSx}>
+                <Typography variant="caption" sx={{ fontWeight: 800, letterSpacing: '0.08em', color: 'text.secondary', pt: 0.5 }}>
+                  Tình trạng
+                </Typography>
+                <Stack direction="row" sx={{ gap: 0.75, flexWrap: 'wrap' }}>
                   {STATUS_OPTIONS.map(opt => (
-                    <Link
+                    <Chip
                       key={`st-${opt.key}`}
-                      to={{
-                        pathname: `${ROUTE_CATEGORIES}/${slug}`,
-                        search: mergeSearch({ status: opt.key || null }),
-                      }}
-                      className={`${styles.filterLink} ${statusFilter === opt.key ? styles.filterLinkActive : ''}`}
-                    >
-                      {opt.label}
-                    </Link>
+                      component={RouterLink}
+                      to={{ pathname: `${ROUTE_CATEGORIES}/${slug}`, search: mergeSearch({ status: opt.key || null }) }}
+                      label={opt.label}
+                      clickable
+                      size="small"
+                      color={statusFilter === opt.key ? 'primary' : 'default'}
+                      variant={statusFilter === opt.key ? 'filled' : 'outlined'}
+                      sx={{ fontWeight: 600 }}
+                    />
                   ))}
-                </div>
-              </div>
+                </Stack>
+              </Box>
 
-              <div className={styles.filterRow}>
-                <div className={styles.filterKey}>Quốc gia</div>
-                <div className={styles.filterVal}>
+              <Box sx={filterRowSx}>
+                <Typography variant="caption" sx={{ fontWeight: 800, letterSpacing: '0.08em', color: 'text.secondary', pt: 0.5 }}>
+                  Quốc gia
+                </Typography>
+                <Stack direction="row" sx={{ gap: 0.75, flexWrap: 'wrap' }}>
                   {COUNTRY_OPTIONS.map(opt => (
-                    <Link
+                    <Chip
                       key={`ct-${opt.key}`}
-                      to={{
-                        pathname: `${ROUTE_CATEGORIES}/${slug}`,
-                        search: mergeSearch({ country: opt.key || null }),
-                      }}
-                      className={`${styles.filterLink} ${countryFilter === opt.key ? styles.filterLinkActive : ''}`}
-                    >
-                      {opt.label}
-                    </Link>
+                      component={RouterLink}
+                      to={{ pathname: `${ROUTE_CATEGORIES}/${slug}`, search: mergeSearch({ country: opt.key || null }) }}
+                      label={opt.label}
+                      clickable
+                      size="small"
+                      color={countryFilter === opt.key ? 'primary' : 'default'}
+                      variant={countryFilter === opt.key ? 'filled' : 'outlined'}
+                      sx={{ fontWeight: 600 }}
+                    />
                   ))}
-                </div>
-              </div>
+                </Stack>
+              </Box>
 
-              <div className={styles.filterRow}>
-                <div className={styles.filterKey}>Sắp xếp</div>
-                <div className={styles.filterVal}>
+              <Box sx={filterRowSx}>
+                <Typography variant="caption" sx={{ fontWeight: 800, letterSpacing: '0.08em', color: 'text.secondary', pt: 0.5 }}>
+                  Sắp xếp
+                </Typography>
+                <Stack direction="row" sx={{ gap: 0.75, flexWrap: 'wrap' }}>
                   {SORT_OPTIONS.map(opt => (
-                    <Link
+                    <Chip
                       key={`so-${opt.key}`}
-                      to={{
-                        pathname: `${ROUTE_CATEGORIES}/${slug}`,
-                        search: mergeSearch({ sort: opt.key || null }),
-                      }}
-                      className={`${styles.filterLink} ${sortFilter === opt.key ? styles.filterLinkActive : ''}`}
-                    >
-                      {opt.label}
-                    </Link>
+                      component={RouterLink}
+                      to={{ pathname: `${ROUTE_CATEGORIES}/${slug}`, search: mergeSearch({ sort: opt.key || null }) }}
+                      label={opt.label}
+                      clickable
+                      size="small"
+                      color={sortFilter === opt.key ? 'primary' : 'default'}
+                      variant={sortFilter === opt.key ? 'filled' : 'outlined'}
+                      sx={{ fontWeight: 600 }}
+                    />
                   ))}
-                </div>
-              </div>
-            </div>
+                </Stack>
+              </Box>
+            </Paper>
 
-            {isCategoryError && <p className={styles.errorText}>Không thể tải truyện theo thể loại này.</p>}
+            {isCategoryError ? (
+              <Typography color="text.secondary" sx={{ textAlign: 'center' }}>
+                Không thể tải truyện theo thể loại này.
+              </Typography>
+            ) : null}
 
-            <div className={styles.resultsWrap}>
-              {isCategoryLoading && !categoryResult && listSkeleton}
+            <Box sx={{ position: 'relative', minHeight: 200 }}>
+              {isCategoryLoading && !categoryResult ? listSkeleton : null}
 
-              {!isCategoryLoading && !isCategoryError && categoryResult && (
+              {!isCategoryLoading && !isCategoryError && categoryResult ? (
                 <>
-                  <div className={styles.list}>
+                  <Stack spacing={2}>
                     {categoryResult.comics.map(comic => (
-                      <article key={comic.id} className={styles.comicRow}>
-                        <Link to={`/truyen/${comic.slug}`} className={styles.rowCover}>
-                          <img src={comic.coverUrl} alt="" loading="lazy" />
-                        </Link>
-                        <div className={styles.rowBody}>
-                          <div className={styles.rowTime}>{comic.updatedAt}</div>
-                          <h2 className={styles.rowTitle}>
-                            <Link to={`/truyen/${comic.slug}`}>{comic.title}</Link>
-                          </h2>
-                          <div className={styles.rowStats}>
-                            Lượt xem:{' '}
-                            {comic.viewCount > 0 ? comic.viewCount.toLocaleString('vi-VN') : '—'}
-                            <span aria-hidden> · </span>
+                      <Paper
+                        key={comic.id}
+                        component="article"
+                        elevation={0}
+                        sx={{
+                          p: { xs: 1.5, sm: 2 },
+                          display: 'grid',
+                          gridTemplateColumns: { xs: '88px 1fr', sm: '112px 1fr' },
+                          gap: { xs: 1.5, sm: 2 },
+                          bgcolor: 'background.paper',
+                          border: 1,
+                          borderColor: 'divider',
+                          borderRadius: 1.5,
+                          transition: theme => theme.transitions.create(['border-color', 'box-shadow']),
+                          '&:hover': {
+                            borderColor: 'rgba(245, 165, 36, 0.35)',
+                            boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
+                          },
+                        }}
+                      >
+                        <Box
+                          component={RouterLink}
+                          to={`/truyen/${comic.slug}`}
+                          sx={{
+                            display: 'block',
+                            borderRadius: 1,
+                            overflow: 'hidden',
+                            border: 1,
+                            borderColor: 'divider',
+                            boxShadow: '0 4px 14px rgba(0,0,0,0.25)',
+                          }}
+                        >
+                          <Box component="img" src={comic.coverUrl} alt="" loading="lazy" sx={{ display: 'block', width: '100%', aspectRatio: '3/4', objectFit: 'cover' }} />
+                        </Box>
+                        <Stack spacing={0.5} sx={{ minWidth: 0 }}>
+                          <Typography variant="caption" sx={{ fontWeight: 700, color: 'primary.main' }}>
+                            {comic.updatedAt}
+                          </Typography>
+                          <Typography variant="h6" component="h2" sx={{ m: 0, fontWeight: 800, lineHeight: 1.3, fontSize: '1.05rem' }}>
+                            <Box
+                              component={RouterLink}
+                              to={`/truyen/${comic.slug}`}
+                              sx={{ color: 'text.primary', textDecoration: 'none', '&:hover': { color: 'primary.main' } }}
+                            >
+                              {comic.title}
+                            </Box>
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600 }}>
+                            Lượt xem: {comic.viewCount > 0 ? comic.viewCount.toLocaleString('vi-VN') : '—'}
+                            <Box component="span" aria-hidden>
+                              {' '}
+                              ·{' '}
+                            </Box>
                             Lượt theo dõi: —
-                          </div>
-                          <div className={styles.rowChapter}>{comic.latestChapter}</div>
-                          <div className={styles.rowStatus}>Tình trạng: {comicStatusVi(comic.status)}</div>
-                          {comic.categories.length > 0 && (
-                            <div className={styles.rowTags}>
+                          </Typography>
+                          <Typography variant="body2" sx={{ fontWeight: 700 }}>
+                            {comic.latestChapter}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            Tình trạng: {comicStatusVi(comic.status)}
+                          </Typography>
+                          {comic.categories.length > 0 ? (
+                            <Stack direction="row" sx={{ mt: 0.5, gap: 0.75, flexWrap: 'wrap' }}>
                               {comic.categories.map(name => (
-                                <span key={name} className={styles.tag}>
-                                  {name}
-                                </span>
+                                <Chip key={name} label={name} size="small" variant="outlined" sx={{ fontSize: '0.72rem', fontWeight: 700, height: 22 }} />
                               ))}
-                            </div>
-                          )}
-                        </div>
-                      </article>
+                            </Stack>
+                          ) : null}
+                        </Stack>
+                      </Paper>
                     ))}
-                  </div>
+                  </Stack>
 
-                  {totalPages > 1 && (
-                    <div className={styles.paginationWrap}>
-                      <div className={styles.pageMeta}>
+                  {totalPages > 1 ? (
+                    <Paper
+                      elevation={0}
+                      sx={{
+                        mt: 3.5,
+                        py: 2,
+                        px: 2,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: 1.25,
+                        bgcolor: 'background.paper',
+                        border: 1,
+                        borderColor: 'divider',
+                        borderRadius: 1.5,
+                      }}
+                    >
+                      <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600 }}>
                         Trang {categoryResult.pagination.currentPage} / {totalPages}
-                      </div>
-                      <Pagination>
-                        <Pagination.Prev disabled={page <= 1} onClick={() => goPage(page - 1)} />
-                        {(() => {
-                          const current = categoryResult.pagination.currentPage
-                          const items: React.ReactNode[] = []
-
-                          items.push(
-                            <Pagination.Item key={1} active={current === 1} onClick={() => goPage(1)}>
-                              1
-                            </Pagination.Item>,
-                          )
-
-                          if (current > 3) {
-                            items.push(<Pagination.Ellipsis key="e1" disabled />)
-                          }
-
-                          for (let i = Math.max(2, current - 1); i <= Math.min(totalPages - 1, current + 1); i++) {
-                            items.push(
-                              <Pagination.Item key={i} active={current === i} onClick={() => goPage(i)}>
-                                {i}
-                              </Pagination.Item>,
-                            )
-                          }
-
-                          if (current < totalPages - 2) {
-                            items.push(<Pagination.Ellipsis key="e2" disabled />)
-                          }
-
-                          if (totalPages > 1) {
-                            items.push(
-                              <Pagination.Item
-                                key={totalPages}
-                                active={current === totalPages}
-                                onClick={() => goPage(totalPages)}
-                              >
-                                {totalPages}
-                              </Pagination.Item>,
-                            )
-                          }
-
-                          return items
-                        })()}
-                        <Pagination.Next disabled={page >= totalPages} onClick={() => goPage(page + 1)} />
-                      </Pagination>
-                    </div>
-                  )}
+                      </Typography>
+                      <Pagination
+                        count={totalPages}
+                        page={page}
+                        onChange={(_, value) => goPage(value)}
+                        color="primary"
+                        showFirstButton
+                        showLastButton
+                        siblingCount={1}
+                        boundaryCount={1}
+                        size="large"
+                      />
+                    </Paper>
+                  ) : null}
                 </>
-              )}
-            </div>
+              ) : null}
+            </Box>
           </>
         )}
       </Container>

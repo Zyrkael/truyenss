@@ -1,9 +1,20 @@
 import React, { useState } from 'react'
-import { Alert, Button, Container, Form } from 'react-bootstrap'
+import {
+  Alert,
+  Box,
+  Button,
+  Checkbox,
+  Container,
+  FormControlLabel,
+  Link,
+  Paper,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material'
 import { Helmet } from 'react-helmet-async'
-import { Link } from 'react-router-dom'
+import { Link as RouterLink } from 'react-router-dom'
 import { AUTH_ROUTE_LOGIN } from './constants'
-import styles from './AuthForm.module.scss'
 
 const MIN_PASSWORD_LEN = 8
 
@@ -19,7 +30,7 @@ export const Register: React.FC = () => {
     const email = String(fd.get('email') ?? '').trim()
     const password = String(fd.get('password') ?? '')
     const confirm = String(fd.get('confirmPassword') ?? '')
-    const agree = fd.get('agree') === 'yes'
+    const agree = fd.get('agree') === 'on'
     if (!email || !password) return
     if (password.length < MIN_PASSWORD_LEN) {
       setFieldError(`Mật khẩu cần ít nhất ${MIN_PASSWORD_LEN} ký tự.`)
@@ -44,92 +55,81 @@ export const Register: React.FC = () => {
         <title>Đăng ký - TruyenSS</title>
       </Helmet>
 
-      <Container className={styles.page}>
-        <div className={styles.card}>
-          <Link to="/" className={styles.brand}>
-            Truyen<span>SS</span>
-          </Link>
-          <p className={styles.lead}>Tạo tài khoản để lưu truyện theo dõi và tham gia cộng đồng (khi có API).</p>
-          <h1 className={styles.title}>Đăng ký</h1>
+      <Container maxWidth="sm" sx={{ py: 4 }}>
+        <Paper elevation={0} sx={{ p: { xs: 2, sm: 4 }, border: 1, borderColor: 'divider', borderRadius: 2 }}>
+          <Box component={RouterLink} to="/" sx={{ textAlign: 'center', textDecoration: 'none', color: 'inherit', display: 'block', mb: 1 }}>
+            <Typography variant="h5" sx={{ fontWeight: 800 }}>
+              Truyen
+              <Box component="span" sx={{ color: 'primary.main' }}>
+                SS
+              </Box>
+            </Typography>
+          </Box>
+          <Typography color="text.secondary" sx={{ mb: 3, textAlign: 'center' }}>
+            Tạo tài khoản để lưu truyện theo dõi và tham gia cộng đồng (khi có API).
+          </Typography>
+          <Typography variant="h6" sx={{ fontWeight: 800, mb: 2 }}>
+            Đăng ký
+          </Typography>
 
           {notice ? (
-            <Alert variant="warning" className="mb-3 py-2 small" onClose={() => setNotice(null)} dismissible>
+            <Alert severity="warning" onClose={() => setNotice(null)} sx={{ mb: 2 }}>
               {notice}
             </Alert>
           ) : null}
           {fieldError && !notice ? (
-            <Alert variant="danger" className="mb-3 py-2 small">
+            <Alert severity="error" sx={{ mb: 2 }}>
               {fieldError}
             </Alert>
           ) : null}
 
-          <Form onSubmit={handleSubmit} noValidate>
-            <Form.Group className={styles.field} controlId="register-name">
-              <Form.Label className={styles.label}>Tên hiển thị (tuỳ chọn)</Form.Label>
-              <Form.Control
-                className={styles.input}
-                type="text"
-                name="displayName"
-                autoComplete="nickname"
-                placeholder="Bạn đọc truyện"
-              />
-            </Form.Group>
-            <Form.Group className={styles.field} controlId="register-email">
-              <Form.Label className={styles.label}>Email</Form.Label>
-              <Form.Control
-                className={styles.input}
-                type="email"
-                name="email"
-                autoComplete="email"
-                placeholder="you@example.com"
-                required
-              />
-            </Form.Group>
-            <Form.Group className={styles.field} controlId="register-password">
-              <Form.Label className={styles.label}>Mật khẩu</Form.Label>
-              <Form.Control
-                className={styles.input}
-                type="password"
-                name="password"
-                autoComplete="new-password"
-                placeholder={`Tối thiểu ${MIN_PASSWORD_LEN} ký tự`}
-                required
-                minLength={MIN_PASSWORD_LEN}
-              />
-            </Form.Group>
-            <Form.Group className={styles.field} controlId="register-confirm">
-              <Form.Label className={styles.label}>Nhập lại mật khẩu</Form.Label>
-              <Form.Control
-                className={styles.input}
-                type="password"
-                name="confirmPassword"
-                autoComplete="new-password"
-                placeholder="••••••••"
-                required
-                minLength={MIN_PASSWORD_LEN}
-              />
-            </Form.Group>
-            <Form.Check
-              type="checkbox"
-              id="register-agree"
-              name="agree"
-              value="yes"
-              label={
-                <span className={styles.check}>
-                  Tôi đồng ý với <Link to="/">điều khoản sử dụng</Link> của TruyenSS.
-                </span>
-              }
-              className="mb-3"
+          <Stack component="form" spacing={2.5} onSubmit={handleSubmit} noValidate>
+            <TextField name="displayName" label="Tên hiển thị (tuỳ chọn)" autoComplete="nickname" placeholder="Bạn đọc truyện" fullWidth />
+            <TextField name="email" type="email" label="Email" autoComplete="email" placeholder="you@example.com" required fullWidth />
+            <TextField
+              name="password"
+              type="password"
+              label="Mật khẩu"
+              autoComplete="new-password"
+              placeholder={`Tối thiểu ${MIN_PASSWORD_LEN} ký tự`}
+              required
+              fullWidth
+              slotProps={{ htmlInput: { minLength: MIN_PASSWORD_LEN } }}
             />
-            <Button type="submit" variant="warning" className={`text-dark ${styles.submit}`}>
+            <TextField
+              name="confirmPassword"
+              type="password"
+              label="Nhập lại mật khẩu"
+              autoComplete="new-password"
+              placeholder="••••••••"
+              required
+              fullWidth
+              slotProps={{ htmlInput: { minLength: MIN_PASSWORD_LEN } }}
+            />
+            <FormControlLabel
+              control={<Checkbox name="agree" />}
+              label={
+                <Typography variant="body2" color="text.secondary">
+                  Tôi đồng ý với{' '}
+                  <Link component={RouterLink} to="/">
+                    điều khoản sử dụng
+                  </Link>{' '}
+                  của TruyenSS.
+                </Typography>
+              }
+            />
+            <Button type="submit" variant="contained" color="primary" size="large" fullWidth>
               Đăng ký
             </Button>
-          </Form>
+          </Stack>
 
-          <p className={styles.switch}>
-            Đã có tài khoản? <Link to={AUTH_ROUTE_LOGIN}>Đăng nhập</Link>
-          </p>
-        </div>
+          <Typography color="text.secondary" sx={{ mt: 3, textAlign: 'center' }}>
+            Đã có tài khoản?{' '}
+            <Link component={RouterLink} to={AUTH_ROUTE_LOGIN} sx={{ fontWeight: 700 }}>
+              Đăng nhập
+            </Link>
+          </Typography>
+        </Paper>
       </Container>
     </>
   )

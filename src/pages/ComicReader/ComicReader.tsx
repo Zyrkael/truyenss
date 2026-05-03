@@ -1,10 +1,24 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { Button, ButtonGroup, Container, Form, Spinner } from 'react-bootstrap'
+import {
+  Alert,
+  Box,
+  Breadcrumbs,
+  Button,
+  ButtonGroup,
+  CircularProgress,
+  Container,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  type SelectChangeEvent,
+  Stack,
+  Typography,
+} from '@mui/material'
 import { Helmet } from 'react-helmet-async'
 import { useQuery } from '@tanstack/react-query'
-import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
+import { Link as RouterLink, Navigate, useNavigate, useParams } from 'react-router-dom'
 import { getChapterRead, getComicDetail } from '~services/comic'
-import styles from './ComicReader.module.scss'
 
 const ROUTE_HOME = '/'
 
@@ -62,9 +76,9 @@ export const ComicReader: React.FC = () => {
   }, [navigate, slug, safeOrder, chapterCount])
 
   const onChapterSelect = useCallback(
-    (e: React.ChangeEvent<HTMLSelectElement>) => {
+    (e: SelectChangeEvent<number>) => {
       if (!slug) return
-      const next = Number.parseInt(e.target.value, 10)
+      const next = Number(e.target.value)
       if (!Number.isFinite(next) || next < 0 || next >= chapterCount) return
       navigate(readerDocPath(slug, next))
     },
@@ -100,17 +114,21 @@ export const ComicReader: React.FC = () => {
 
   if (comicLoading) {
     return (
-      <Container className="py-5 text-center">
-        <Spinner animation="border" variant="warning" role="status" />
-        <p className="text-muted mt-3 mb-0">Đang tải truyện…</p>
+      <Container maxWidth="lg" sx={{ py: 5, textAlign: 'center' }}>
+        <CircularProgress color="primary" aria-busy />
+        <Typography color="text.secondary" sx={{ mt: 2 }}>
+          Đang tải truyện…
+        </Typography>
       </Container>
     )
   }
 
   if (comicError || !comic) {
     return (
-      <Container className="py-5">
-        <div className={styles.errorBox}>Không tải được dữ liệu truyện.</div>
+      <Container maxWidth="lg" sx={{ py: 5 }}>
+        <Alert severity="error" sx={{ maxWidth: 520, mx: 'auto' }}>
+          Không tải được dữ liệu truyện.
+        </Alert>
       </Container>
     )
   }
@@ -138,145 +156,225 @@ export const ComicReader: React.FC = () => {
         <meta name="description" content={`Đọc ${comic.title} chương ${chName} tại TruyenSS.`} />
       </Helmet>
 
-      <div className={styles.page}>
-        <Container className="py-2">
-          <div className={styles.toolbar}>
-            {servers.length > 1 && (
-              <div className={styles.serverRow}>
-                <span className={styles.serverLabel}>Server ảnh</span>
-                <ButtonGroup size="sm">
+      <Box sx={{ pb: 6 }}>
+        <Container maxWidth="lg" sx={{ py: 1 }}>
+          <Box
+            sx={{
+              position: 'sticky',
+              top: 0,
+              zIndex: 20,
+              mx: { xs: -1.5, sm: 0 },
+              px: 1.5,
+              py: 1.25,
+              mb: 2,
+              bgcolor: theme => (theme.palette.mode === 'dark' ? 'rgba(26,26,26,0.92)' : 'rgba(255,255,255,0.92)'),
+              backdropFilter: 'blur(8px)',
+              borderBottom: 1,
+              borderColor: 'divider',
+              borderRadius: { xs: 0, sm: '0 0 10px 10px' },
+            }}
+          >
+            {servers.length > 1 ? (
+              <Stack direction="row" sx={{ mb: 1, gap: 1, flexWrap: 'wrap', alignItems: 'center' }}>
+                <Typography variant="caption" sx={{ fontWeight: 800, letterSpacing: '0.1em', color: 'text.secondary' }}>
+                  Server ảnh
+                </Typography>
+                <ButtonGroup size="small" variant="outlined">
                   {servers.map((s, i) => (
                     <Button
                       key={s.serverName}
                       type="button"
-                      variant={i === serverIdx ? 'warning' : 'outline-secondary'}
-                      className={i === serverIdx ? 'text-dark fw-bold' : ''}
+                      variant={i === serverIdx ? 'contained' : 'outlined'}
+                      color="primary"
                       onClick={() => setServerIdx(i)}
                     >
                       {s.serverName || `Server ${i + 1}`}
                     </Button>
                   ))}
                 </ButtonGroup>
-              </div>
-            )}
-            <p className={styles.hint}>Nếu không xem được ảnh, hãy thử đổi &quot;Server ảnh&quot; phía trên.</p>
-          </div>
+              </Stack>
+            ) : null}
+            <Typography variant="body2" color="text.secondary" sx={{ m: 0 }}>
+              Nếu không xem được ảnh, hãy thử đổi &quot;Server ảnh&quot; phía trên.
+            </Typography>
+          </Box>
 
-          <nav className={styles.breadcrumb} aria-label="Breadcrumb">
-            <Link to={ROUTE_HOME}>Trang Chủ</Link>
-            <span className={styles.breadcrumbSep}>/</span>
-            <Link to={detailPath}>{comic.title}</Link>
-            <span className={styles.breadcrumbSep}>/</span>
-            <span className={styles.breadcrumbCurrent}>Chương {chName}</span>
-          </nav>
+          <Breadcrumbs aria-label="Breadcrumb" sx={{ mb: 1.5, flexWrap: 'wrap', '& a': { color: 'text.secondary' } }}>
+            <Typography component={RouterLink} to={ROUTE_HOME} variant="body2" sx={{ textDecoration: 'none', '&:hover': { color: 'primary.main' } }}>
+              Trang Chủ
+            </Typography>
+            <Typography component={RouterLink} to={detailPath} variant="body2" sx={{ textDecoration: 'none', '&:hover': { color: 'primary.main' } }}>
+              {comic.title}
+            </Typography>
+            <Typography color="text.primary" variant="body2" sx={{ fontWeight: 600 }}>
+              Chương {chName}
+            </Typography>
+          </Breadcrumbs>
 
-          <div className={styles.titleBlock}>
-            <h1 className={styles.title}>
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="h5" component="h1" sx={{ fontWeight: 800, lineHeight: 1.3, mb: 0.75 }}>
               {comic.title} — Chapter {chName}
-            </h1>
-            <p className={styles.subMeta}>
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ m: 0 }}>
               {chapterPayload?.updatedAtLabel
                 ? `(Cập nhật lúc: ${chapterPayload.updatedAtLabel})`
                 : pagesLoading
                   ? '(Đang tải thông tin chương…)'
                   : `(Truyện cập nhật: ${comic.updatedAtCalendar})`}
-            </p>
-          </div>
+            </Typography>
+          </Box>
 
-          <div className={styles.navRow}>
-            <Button type="button" variant="outline-warning" disabled={safeOrder <= 0} onClick={goPrev}>
+          <Stack direction="row" sx={{ mb: 2.5, gap: 1.25, flexWrap: 'wrap', alignItems: 'center' }}>
+            <Button type="button" variant="outlined" color="primary" disabled={safeOrder <= 0} onClick={goPrev}>
               ← Chap trước
             </Button>
-            <Button type="button" variant="outline-warning" disabled={safeOrder >= chapterCount - 1} onClick={goNext}>
+            <Button
+              type="button"
+              variant="outlined"
+              color="primary"
+              disabled={safeOrder >= chapterCount - 1}
+              onClick={goNext}
+            >
               Chap sau →
             </Button>
-            <Button type="button" variant="link" size="sm" className="text-muted text-decoration-none" disabled>
+            <Button type="button" size="small" disabled sx={{ color: 'text.secondary' }}>
               Báo lỗi chương
             </Button>
-          </div>
+          </Stack>
 
-          <p className={styles.nextHint}>
-            <em>Dùng phím ← hoặc → để chuyển chương.</em>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2, fontStyle: 'italic' }}>
+            Dùng phím ← hoặc → để chuyển chương.
             {nextCh ? ` Tiếp theo: Chương ${nextCh.chapterName}.` : ' Đây là chương mới nhất.'}
-          </p>
+          </Typography>
 
-          {pagesLoading && (
-            <div className={styles.loadingBox}>
-              <Spinner animation="border" variant="warning" />
-              <p className="mt-2 mb-0 text-muted">Đang tải ảnh chương…</p>
-            </div>
-          )}
+          {pagesLoading ? (
+            <Box sx={{ textAlign: 'center', py: 6 }}>
+              <CircularProgress color="primary" />
+              <Typography color="text.secondary" sx={{ mt: 2 }}>
+                Đang tải ảnh chương…
+              </Typography>
+            </Box>
+          ) : null}
 
-          {pagesError && (
-            <div className={styles.errorBox}>
-              <p className="mb-2">Không tải được ảnh chương.</p>
-              <Button type="button" size="sm" variant="warning" onClick={() => refetchPages()}>
-                Thử lại
-              </Button>
-            </div>
-          )}
+          {pagesError ? (
+            <Alert
+              severity="error"
+              sx={{ maxWidth: 520, mx: 'auto', textAlign: 'center', py: 3 }}
+              action={
+                <Button color="inherit" size="small" onClick={() => refetchPages()}>
+                  Thử lại
+                </Button>
+              }
+            >
+              Không tải được ảnh chương.
+            </Alert>
+          ) : null}
 
-          {!pagesLoading && !pagesError && pageUrls.length === 0 && chapterApiData && (
-            <div className={styles.errorBox}>
-              <p className="mb-2">Chương không có dữ liệu ảnh.</p>
-              {servers.length > 1 ? <p className="small text-muted mb-0">Thử đổi server ảnh khác.</p> : null}
-            </div>
-          )}
+          {!pagesLoading && !pagesError && pageUrls.length === 0 && chapterApiData ? (
+            <Alert severity="warning" sx={{ maxWidth: 520, mx: 'auto' }}>
+              Chương không có dữ liệu ảnh.
+              {servers.length > 1 ? (
+                <Typography variant="caption" sx={{ mt: 1, display: 'block' }}>
+                  Thử đổi server ảnh khác.
+                </Typography>
+              ) : null}
+            </Alert>
+          ) : null}
 
-          {!pagesLoading && !pagesError && pageUrls.length > 0 && (
-            <div className={styles.images}>
+          {!pagesLoading && !pagesError && pageUrls.length > 0 ? (
+            <Stack
+              spacing={0}
+              sx={{
+                alignItems: 'center',
+                bgcolor: '#0d0d0d',
+                borderRadius: 1.5,
+                overflow: 'hidden',
+                border: 1,
+                borderColor: 'divider',
+              }}
+            >
               {pageUrls.map((src, i) => (
-                <img key={i} src={src} alt={chTitle ? `${comic.title} — ${chTitle} — trang ${i + 1}` : `${comic.title} chương ${chName} trang ${i + 1}`} className={styles.pageImg} loading={i < 3 ? 'eager' : 'lazy'} />
+                <Box
+                  key={i}
+                  component="img"
+                  src={src}
+                  alt={
+                    chTitle
+                      ? `${comic.title} — ${chTitle} — trang ${i + 1}`
+                      : `${comic.title} chương ${chName} trang ${i + 1}`
+                  }
+                  loading={i < 3 ? 'eager' : 'lazy'}
+                  sx={{
+                    display: 'block',
+                    width: '100%',
+                    maxWidth: 'min(920px, 100%)',
+                    height: 'auto',
+                    verticalAlign: 'middle',
+                  }}
+                />
               ))}
-            </div>
-          )}
+            </Stack>
+          ) : null}
 
-          <div className={styles.bottomBar}>
-            <div className={styles.chapterPicker}>
-              <label htmlFor="reader-chapter-select" className={styles.chapterPickerLabel}>
-                Chọn chương
-              </label>
-              <Form.Select
-                id="reader-chapter-select"
-                size="sm"
-                className={styles.chapterSelect}
-                value={safeOrder}
-                onChange={onChapterSelect}
-              >
-                {comic.chaptersAscending.map(ch => {
-                  const label = ch.chapterTitle?.trim()
-                    ? `${ch.chapterName} — ${ch.chapterTitle.trim()}`
-                    : `Chương ${ch.chapterName}`
-                  return (
-                    <option key={ch.orderIndex} value={ch.orderIndex}>
-                      {label}
-                    </option>
-                  )
-                })}
-              </Form.Select>
-              <span className={styles.chapterPickerMeta}>
+          <Box
+            sx={{
+              mt: 2.5,
+              p: 2,
+              bgcolor: 'background.paper',
+              border: 1,
+              borderColor: 'divider',
+              borderRadius: 1.5,
+            }}
+          >
+            <Stack direction="row" sx={{ mb: 2, gap: 1.5, flexWrap: 'wrap', alignItems: 'center' }}>
+              <FormControl size="small" sx={{ flex: '1 1 200px', minWidth: 0, maxWidth: '100%' }}>
+                <InputLabel id="reader-chapter-select-label">Chọn chương</InputLabel>
+                <Select<number>
+                  labelId="reader-chapter-select-label"
+                  id="reader-chapter-select"
+                  label="Chọn chương"
+                  value={safeOrder}
+                  onChange={onChapterSelect}
+                >
+                  {comic.chaptersAscending.map(ch => {
+                    const label = ch.chapterTitle?.trim()
+                      ? `${ch.chapterName} — ${ch.chapterTitle.trim()}`
+                      : `Chương ${ch.chapterName}`
+                    return (
+                      <MenuItem key={ch.orderIndex} value={ch.orderIndex}>
+                        {label}
+                      </MenuItem>
+                    )
+                  })}
+                </Select>
+              </FormControl>
+              <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 700, fontVariantNumeric: 'tabular-nums' }}>
                 {safeOrder + 1} / {chapterCount}
-              </span>
-            </div>
-            <div className={styles.bottomNav}>
-              <Button type="button" variant="outline-secondary" disabled={safeOrder <= 0} onClick={goPrev}>
+              </Typography>
+            </Stack>
+            <Stack direction="row" sx={{ gap: 1.25, flexWrap: 'wrap', justifyContent: 'center' }}>
+              <Button type="button" variant="outlined" disabled={safeOrder <= 0} onClick={goPrev}>
                 Chap trước
               </Button>
-              <Button type="button" variant="outline-secondary" disabled={safeOrder >= chapterCount - 1} onClick={goNext}>
+              <Button type="button" variant="outlined" disabled={safeOrder >= chapterCount - 1} onClick={goNext}>
                 Chap sau
               </Button>
-              <Button type="button" variant="outline-warning" disabled>
+              <Button type="button" variant="outlined" color="primary" disabled>
                 Theo dõi
               </Button>
-            </div>
-          </div>
+            </Stack>
+          </Box>
 
-          <section className="mt-4 py-3 border-top border-secondary">
-            <h2 className="h6 fw-bold mb-2">Bình luận</h2>
-            <p className="text-muted small mb-0">Tính năng bình luận sẽ được bổ sung sau.</p>
-          </section>
+          <Box sx={{ mt: 3, py: 2, borderTop: 1, borderColor: 'divider' }}>
+            <Typography variant="subtitle2" sx={{ mb: 1 }}>
+              Bình luận
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Tính năng bình luận sẽ được bổ sung sau.
+            </Typography>
+          </Box>
         </Container>
-      </div>
+      </Box>
     </>
   )
 }

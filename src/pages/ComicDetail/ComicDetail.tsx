@@ -1,10 +1,25 @@
 import React, { useEffect, useMemo } from 'react'
-import { Button, Container, Spinner } from 'react-bootstrap'
+import {
+  Avatar,
+  Backdrop,
+  Box,
+  Breadcrumbs,
+  Button,
+  Chip,
+  CircularProgress,
+  Container,
+  Link,
+  Paper,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material'
+import ChatBubbleOutlineOutlined from '@mui/icons-material/ChatBubbleOutlineOutlined'
+import ThumbUpAltOutlined from '@mui/icons-material/ThumbUpAltOutlined'
 import { Helmet } from 'react-helmet-async'
 import { useQuery } from '@tanstack/react-query'
-import { Link, Navigate, useParams } from 'react-router-dom'
+import { Link as RouterLink, Navigate, useParams } from 'react-router-dom'
 import { getComicDetail } from '~services/comic'
-import styles from './ComicDetail.module.scss'
 
 const ROUTE_HOME = '/'
 const ROUTE_CATEGORIES = '/the-loai'
@@ -88,6 +103,24 @@ const MOCK_COMMENTS: MockComment[] = [
   },
 ]
 
+const userNameSx = (tone: MockComment['nameTone']) =>
+  tone === 'gold'
+    ? { color: '#e8c547' }
+    : { color: '#5b9fd8' }
+
+const rankSx = (tone: MockComment['rankTone']) =>
+  tone === 'violet'
+    ? {
+        color: '#c4a8ff',
+        bgcolor: 'rgba(138, 92, 246, 0.14)',
+        border: '1px solid rgba(138, 92, 246, 0.35)',
+      }
+    : {
+        color: '#f0a8d8',
+        bgcolor: 'rgba(224, 64, 150, 0.12)',
+        border: '1px solid rgba(224, 64, 150, 0.35)',
+      }
+
 export const ComicDetail: React.FC = () => {
   const { slug } = useParams<{ slug: string }>()
 
@@ -115,19 +148,19 @@ export const ComicDetail: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className={styles.loadingOverlay}>
-        <Spinner animation="border" variant="light" role="status" />
-        <p className={styles.loadingText}>Đang tải thông tin truyện...</p>
-      </div>
+      <Backdrop open sx={{ color: '#fff', zIndex: theme => theme.zIndex.modal }}>
+        <Stack sx={{ gap: 1.5, alignItems: 'center' }}>
+          <CircularProgress color="inherit" />
+          <Typography>Đang tải thông tin truyện...</Typography>
+        </Stack>
+      </Backdrop>
     )
   }
 
   if (isError || !data) {
     return (
-      <Container className="py-5">
-        <div className={styles.errorBox}>
-          <p className="mb-0">Không thể tải chi tiết truyện. Vui lòng thử lại sau.</p>
-        </div>
+      <Container maxWidth="lg" sx={{ py: 5 }}>
+        <AlertBox>Không thể tải chi tiết truyện. Vui lòng thử lại sau.</AlertBox>
       </Container>
     )
   }
@@ -137,6 +170,15 @@ export const ComicDetail: React.FC = () => {
 
   const metaDescription = (data.description || data.title).slice(0, 160)
 
+  const sectionPaperSx = {
+    mb: 3.5,
+    p: { xs: 2, sm: 2.75 },
+    bgcolor: 'background.paper',
+    border: 1,
+    borderColor: 'divider',
+    borderRadius: 1.75,
+  }
+
   return (
     <>
       <Helmet>
@@ -144,225 +186,430 @@ export const ComicDetail: React.FC = () => {
         <meta name="description" content={metaDescription} />
       </Helmet>
 
-      <div className={styles.page}>
-        <Container className="py-3">
-          <nav className={styles.breadcrumb} aria-label="Breadcrumb">
-            <Link to={ROUTE_HOME}>Trang Chủ</Link>
-            <span className={styles.breadcrumbSep}>/</span>
-            <span className={styles.breadcrumbCurrent}>{data.title}</span>
-          </nav>
+      <Box sx={{ pb: 6 }}>
+        <Container maxWidth="lg" sx={{ py: 2 }}>
+          <Breadcrumbs aria-label="Breadcrumb" sx={{ mb: 2, flexWrap: 'wrap', '& a': { color: 'text.secondary' } }}>
+            <Link component={RouterLink} to={ROUTE_HOME} underline="hover" color="inherit" variant="body2">
+              Trang Chủ
+            </Link>
+            <Typography color="text.primary" variant="body2" sx={{ fontWeight: 600 }}>
+              {data.title}
+            </Typography>
+          </Breadcrumbs>
 
-          <div className={styles.hero}>
-            <div className={styles.coverWrap}>
-              <img src={data.coverUrl} alt={data.title} className={styles.coverImage} />
-            </div>
-            <div className={styles.heroMain}>
-              <span className={styles.latestPill}>{data.latestChapter}</span>
-              <h1 className={styles.title}>{data.title}</h1>
+          <Paper
+            elevation={0}
+            sx={{
+              mb: 3,
+              display: 'flex',
+              flexDirection: { xs: 'column', md: 'row' },
+              alignItems: { xs: 'stretch', md: 'stretch' },
+              overflow: 'hidden',
+              borderRadius: 3,
+              border: 1,
+              borderColor: 'divider',
+              bgcolor: 'background.paper',
+              boxShadow: theme =>
+                theme.palette.mode === 'dark' ? '0 8px 40px rgba(0,0,0,0.45)' : '0 4px 24px rgba(0,0,0,0.08)',
+            }}
+          >
+            {/* Cột trái: ảnh bìa + vùng nền phía dưới (layout thẻ ngang) */}
+            <Box
+              sx={{
+                width: { xs: '100%', md: 260 },
+                maxWidth: { xs: 280, md: 'none' },
+                mx: { xs: 'auto', md: 0 },
+                flexShrink: 0,
+                display: 'flex',
+                flexDirection: 'column',
+                bgcolor: theme => (theme.palette.mode === 'dark' ? 'rgba(0,0,0,0.2)' : '#f5f5f7'),
+                borderRight: { md: 1 },
+                borderColor: 'divider',
+              }}
+            >
+              <Box sx={{ p: { xs: 2.5, md: 2.5 }, pb: { xs: 2, md: 0 } }}>
+                <Box
+                  component="img"
+                  src={data.coverUrl}
+                  alt={data.title}
+                  sx={{
+                    display: 'block',
+                    width: '100%',
+                    aspectRatio: '3/4',
+                    objectFit: 'cover',
+                    borderRadius: '12px 12px 0 0',
+                    boxShadow: theme => (theme.palette.mode === 'dark' ? '0 6px 20px rgba(0,0,0,0.5)' : '0 8px 20px rgba(0,0,0,0.12)'),
+                  }}
+                />
+              </Box>
+              <Box sx={{ flex: 1, minHeight: { xs: 0, md: 32 } }} aria-hidden />
+            </Box>
 
-              <dl className={styles.metaGrid}>
-                <div className={styles.metaItem}>
-                  <dt>Tên khác</dt>
-                  <dd>{data.title}</dd>
-                </div>
-                <div className={styles.metaItem}>
-                  <dt>Tác giả</dt>
-                  <dd>{data.author}</dd>
-                </div>
-                <div className={styles.metaItem}>
-                  <dt>Ngày cập nhật</dt>
-                  <dd>{data.updatedAtCalendar}</dd>
-                </div>
-                <div className={styles.metaItem}>
-                  <dt>Tổng số chương</dt>
-                  <dd>{data.chapterCount}</dd>
-                </div>
-                <div className={styles.metaItem}>
-                  <dt>Tình trạng</dt>
-                  <dd>{data.statusLabel}</dd>
-                </div>
-                <div className={styles.metaItem}>
-                  <dt>Độ tuổi</dt>
-                  <dd>13+</dd>
-                </div>
-                <div className={styles.metaItem}>
-                  <dt>Lượt thích</dt>
-                  <dd>—</dd>
-                </div>
-                <div className={styles.metaItem}>
-                  <dt>Lượt theo dõi</dt>
-                  <dd>—</dd>
-                </div>
-                <div className={styles.metaItem}>
-                  <dt>Lượt xem</dt>
-                  <dd>—</dd>
-                </div>
-              </dl>
+            {/* Cột phải: chip chương, tiêu đề, meta dọc, nút, thể loại */}
+            <Stack
+              spacing={2.25}
+              sx={{
+                flex: 1,
+                minWidth: 0,
+                p: { xs: 2.5, sm: 3, md: 3.5 },
+                pt: { xs: 2, md: 3.5 },
+                textAlign: 'left',
+                alignItems: 'flex-start',
+              }}
+            >
+              <Chip
+                label={data.latestChapter}
+                size="small"
+                sx={{
+                  fontWeight: 800,
+                  letterSpacing: '0.06em',
+                  height: 28,
+                  color: 'primary.contrastText',
+                  background: theme =>
+                    `linear-gradient(135deg, ${theme.palette.primary.light}, ${theme.palette.primary.main})`,
+                  '& .MuiChip-label': { px: 1.5 },
+                }}
+              />
+              <Typography variant="h4" component="h1" sx={{ fontWeight: 800, lineHeight: 1.2, m: 0, fontSize: { xs: '1.35rem', sm: '1.65rem' } }}>
+                {data.title}
+              </Typography>
 
-              <div className={styles.actions}>
+              <Stack component="dl" spacing={1.35} sx={{ m: 0, p: 0, width: '100%', maxWidth: 520 }}>
+                {[
+                  ['Tên khác', data.title],
+                  ['Tác giả', data.author],
+                  ['Ngày cập nhật', data.updatedAtCalendar],
+                  ['Tổng số chương', String(data.chapterCount)],
+                  ['Tình trạng', data.statusLabel],
+                  ['Độ tuổi', '13+'],
+                  ['Lượt thích', '—'],
+                  ['Lượt theo dõi', '—'],
+                  ['Lượt xem', '—'],
+                ].map(([k, v]) => (
+                  <Box key={k} component="div" sx={{ display: 'grid', gap: 0.125 }}>
+                    <Typography component="dt" variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, letterSpacing: '0.02em' }}>
+                      {k}
+                    </Typography>
+                    <Typography component="dd" variant="body2" sx={{ m: 0, fontWeight: 600, color: 'text.primary' }}>
+                      {v}
+                    </Typography>
+                  </Box>
+                ))}
+              </Stack>
+
+              <Stack direction="row" sx={{ gap: 1.25, flexWrap: 'wrap', pt: 0.5 }}>
                 {firstOrder != null ? (
-                  <Link className="btn btn-warning fw-bold text-dark" to={readerDocPath(data.slug, firstOrder)}>
+                  <Button
+                    component={RouterLink}
+                    to={readerDocPath(data.slug, firstOrder)}
+                    variant="contained"
+                    color="primary"
+                    size="medium"
+                    sx={{ borderRadius: 999, px: 2.5, fontWeight: 800, letterSpacing: '0.06em' }}
+                  >
                     Đọc từ đầu
-                  </Link>
+                  </Button>
                 ) : (
-                  <Button variant="warning" className="fw-bold text-dark" disabled>
+                  <Button variant="contained" color="primary" size="medium" disabled sx={{ borderRadius: 999, px: 2.5, fontWeight: 800 }}>
                     Đọc từ đầu
                   </Button>
                 )}
                 {latestOrder != null && latestOrder !== firstOrder ? (
-                  <Link className="btn btn-outline-warning" to={readerDocPath(data.slug, latestOrder)}>
+                  <Button
+                    component={RouterLink}
+                    to={readerDocPath(data.slug, latestOrder)}
+                    variant="outlined"
+                    color="primary"
+                    size="medium"
+                    sx={{ borderRadius: 999, px: 2.5, fontWeight: 800, letterSpacing: '0.06em' }}
+                  >
                     Chương mới nhất
-                  </Link>
+                  </Button>
                 ) : null}
-                <Button variant="outline-secondary" type="button" onClick={handlePlaceholderAction}>
+                <Button
+                  variant="outlined"
+                  color="inherit"
+                  size="medium"
+                  onClick={handlePlaceholderAction}
+                  sx={{
+                    borderRadius: 999,
+                    px: 2.5,
+                    fontWeight: 700,
+                    borderColor: 'divider',
+                    color: 'text.primary',
+                    '&:hover': { borderColor: 'text.secondary', bgcolor: 'action.hover' },
+                  }}
+                >
                   Theo dõi
                 </Button>
-                <Button variant="outline-secondary" type="button" onClick={handlePlaceholderAction}>
+                <Button
+                  variant="outlined"
+                  color="inherit"
+                  size="medium"
+                  onClick={handlePlaceholderAction}
+                  sx={{
+                    borderRadius: 999,
+                    px: 2.5,
+                    fontWeight: 700,
+                    borderColor: 'divider',
+                    color: 'text.primary',
+                    '&:hover': { borderColor: 'text.secondary', bgcolor: 'action.hover' },
+                  }}
+                >
                   Thích
                 </Button>
-              </div>
+              </Stack>
 
-              {data.categories.length > 0 && (
-                <div className={styles.catRow}>
+              {data.categories.length > 0 ? (
+                <Stack direction="row" sx={{ gap: 1, flexWrap: 'wrap', pt: 0.5 }}>
                   {data.categories.map(cat => (
-                    <Link key={cat.slug} className={styles.catLink} to={`${ROUTE_CATEGORIES}/${cat.slug}`}>
-                      {cat.name}
-                    </Link>
+                    <Chip
+                      key={cat.slug}
+                      component={RouterLink}
+                      to={`${ROUTE_CATEGORIES}/${cat.slug}`}
+                      label={cat.name}
+                      clickable
+                      variant="outlined"
+                      color="primary"
+                      size="small"
+                      sx={{ fontWeight: 700, borderRadius: 2 }}
+                    />
                   ))}
-                </div>
-              )}
-            </div>
-          </div>
+                </Stack>
+              ) : null}
+            </Stack>
+          </Paper>
 
-          <section className={styles.section} aria-labelledby="comic-intro-heading">
-            <h2 id="comic-intro-heading" className={styles.sectionHead}>
-              <span className={styles.sectionHeadBar} aria-hidden />
-              Giới thiệu
-            </h2>
-            <div className={styles.intro}>
+          <Box component="section" aria-labelledby="comic-intro-heading" sx={sectionPaperSx}>
+            <Stack direction="row" spacing={1.25} sx={{ mb: 2, alignItems: 'center' }}>
+              <Box
+                aria-hidden
+                sx={{
+                  width: 4,
+                  height: '1.1em',
+                  borderRadius: 0.5,
+                  background: theme => `linear-gradient(180deg, ${theme.palette.primary.light}, ${theme.palette.primary.main})`,
+                }}
+              />
+              <Typography id="comic-intro-heading" variant="h6" component="h2" sx={{ fontWeight: 800, m: 0 }}>
+                Giới thiệu
+              </Typography>
+            </Stack>
+            <Box sx={{ fontSize: '0.95rem', lineHeight: 1.75, color: 'text.secondary' }}>
               {introParagraphs.map((para, i) => (
-                <p key={i}>{para}</p>
+                <Typography key={i} component="p" sx={{ m: 0, mb: 1.5, '&:last-child': { mb: 0 } }}>
+                  {para}
+                </Typography>
               ))}
-            </div>
-          </section>
+            </Box>
+          </Box>
 
-          <section className={styles.section} aria-labelledby="comic-chapters-heading">
-            <h2 id="comic-chapters-heading" className={styles.sectionHead}>
-              <span className={styles.sectionHeadBar} aria-hidden />
-              Danh sách chương
-            </h2>
+          <Box component="section" aria-labelledby="comic-chapters-heading" sx={sectionPaperSx}>
+            <Stack direction="row" spacing={1.25} sx={{ mb: 2, alignItems: 'center' }}>
+              <Box
+                aria-hidden
+                sx={{
+                  width: 4,
+                  height: '1.1em',
+                  borderRadius: 0.5,
+                  background: theme => `linear-gradient(180deg, ${theme.palette.primary.light}, ${theme.palette.primary.main})`,
+                }}
+              />
+              <Typography id="comic-chapters-heading" variant="h6" component="h2" sx={{ fontWeight: 800, m: 0 }}>
+                Danh sách chương
+              </Typography>
+            </Stack>
             {data.chaptersNewestFirst.length === 0 ? (
-              <p className="text-muted mb-0">Chưa có dữ liệu chương.</p>
+              <Typography color="text.secondary">Chưa có dữ liệu chương.</Typography>
             ) : (
-              <div className={styles.chapterGrid} role="list">
+              <Box
+                role="list"
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
+                  gap: 1,
+                  maxHeight: 'min(70vh, 560px)',
+                  overflowY: 'auto',
+                  pr: 0.5,
+                }}
+              >
                 {data.chaptersNewestFirst.map(ch => (
-                  <Link
+                  <Box
                     key={ch.orderIndex}
+                    component={RouterLink}
                     id={`chapter-${ch.orderIndex}`}
-                    className={styles.chapterRow}
                     to={readerDocPath(data.slug, ch.orderIndex)}
+                    role="listitem"
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      gap: 1.5,
+                      p: '10px 14px',
+                      textDecoration: 'none',
+                      color: 'inherit',
+                      bgcolor: theme => (theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)'),
+                      border: 1,
+                      borderColor: 'divider',
+                      borderRadius: 1.25,
+                      transition: theme => theme.transitions.create(['background-color', 'border-color']),
+                      '&:hover': {
+                        bgcolor: 'action.hover',
+                        borderColor: 'rgba(245, 165, 36, 0.35)',
+                      },
+                    }}
                   >
-                    <span className={styles.chapterName}>
+                    <Typography variant="body2" sx={{ fontWeight: 700 }}>
                       Chương {ch.chapterName}
                       {ch.chapterTitle ? ` — ${ch.chapterTitle}` : ''}
-                    </span>
-                    <span className={styles.chapterDate}>{data.updatedAtCalendar}</span>
-                  </Link>
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary" sx={{ flexShrink: 0 }}>
+                      {data.updatedAtCalendar}
+                    </Typography>
+                  </Box>
                 ))}
-              </div>
+              </Box>
             )}
-          </section>
+          </Box>
 
-          <section className={styles.section} aria-labelledby="comic-comments-heading">
-            <div className={styles.commentsHead}>
-              <h2 id="comic-comments-heading" className={styles.commentsTitle}>
-                <span className={styles.commentsTitleIcon} aria-hidden>
-                  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                    <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z" />
-                  </svg>
-                </span>
-                Bình luận
-                <span className={styles.commentsCount}>({MOCK_COMMENT_COUNT})</span>
-              </h2>
-              <p className={styles.commentsFanline}>
+          <Box component="section" aria-labelledby="comic-comments-heading" sx={sectionPaperSx}>
+            <Stack spacing={1} sx={{ mb: 2 }}>
+              <Stack direction="row" sx={{ gap: 1, flexWrap: 'wrap', alignItems: 'center', color: 'primary.main' }}>
+                <ChatBubbleOutlineOutlined sx={{ fontSize: 20 }} />
+                <Typography id="comic-comments-heading" variant="h6" component="h2" sx={{ fontWeight: 800, m: 0, color: 'primary.main' }}>
+                  Bình luận
+                </Typography>
+                <Typography component="span" variant="h6" sx={{ fontWeight: 800, color: 'primary.main' }}>
+                  ({MOCK_COMMENT_COUNT})
+                </Typography>
+              </Stack>
+              <Typography variant="body2" color="text.secondary">
                 Đây là bình luận mẫu để xem giao diện. Tính năng gửi bình luận thật sẽ được bổ sung sau.
-              </p>
-            </div>
+              </Typography>
+            </Stack>
 
-            <label htmlFor="comic-comment-draft" className="visually-hidden">
-              Nội dung bình luận (chưa kích hoạt)
-            </label>
-            <textarea
+            <TextField
               id="comic-comment-draft"
-              className={styles.commentsTextarea}
-              rows={4}
-              readOnly
+              fullWidth
+              multiline
+              minRows={4}
               placeholder="Hãy bình luận có văn hóa để tránh bị khóa tài khoản"
-              aria-describedby="comic-comments-heading"
+              slotProps={{ htmlInput: { readOnly: true, 'aria-describedby': 'comic-comments-heading' } }}
+              sx={{ mb: 2.25 }}
             />
 
-            <ul className={styles.commentList} role="list">
+            <Stack component="ul" role="list" spacing={2} sx={{ m: 0, p: 0, listStyle: 'none' }}>
               {MOCK_COMMENTS.map(c => (
-                <li key={c.id} className={styles.commentCard}>
-                  <div className={styles.commentTop}>
-                    <div className={styles.commentAvatar} aria-hidden>
+                <Box
+                  key={c.id}
+                  component="li"
+                  role="listitem"
+                  sx={{
+                    p: '14px 14px 12px',
+                    bgcolor: theme => (theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)'),
+                    border: 1,
+                    borderColor: 'divider',
+                    borderRadius: 1.5,
+                  }}
+                >
+                  <Stack direction="row" spacing={1.5} sx={{ alignItems: 'flex-start' }}>
+                    <Avatar
+                      sx={{
+                        width: 44,
+                        height: 44,
+                        fontSize: '0.72rem',
+                        fontWeight: 800,
+                        color: 'primary.contrastText',
+                        background: theme => `linear-gradient(135deg, ${theme.palette.primary.light}, ${theme.palette.primary.main})`,
+                        border: '1px solid rgba(245, 165, 36, 0.35)',
+                      }}
+                    >
                       {c.initials}
-                    </div>
-                    <div className={styles.commentMeta}>
-                      <span
-                        className={`${styles.commentUser} ${c.nameTone === 'gold' ? styles.commentUserGold : styles.commentUserBlue}`}
-                      >
+                    </Avatar>
+                    <Stack direction="row" sx={{ gap: 1, minWidth: 0, pt: 0.25, flexWrap: 'wrap', alignItems: 'center' }}>
+                      <Typography variant="body2" sx={{ fontWeight: 700, ...userNameSx(c.nameTone) }}>
                         {c.userName}
-                      </span>
-                      <span
-                        className={`${styles.commentRank} ${c.rankTone === 'violet' ? styles.commentRankViolet : styles.commentRankPink}`}
-                      >
+                      </Typography>
+                      <Typography component="span" variant="caption" sx={{ fontWeight: 800, letterSpacing: '0.04em', borderRadius: 0.75, px: 1, py: 0.25, ...rankSx(c.rankTone) }}>
                         [{c.rank}]
-                      </span>
-                    </div>
-                  </div>
-                  <div className={styles.commentDivider} aria-hidden />
-                  <div className={styles.commentBody}>
+                      </Typography>
+                    </Stack>
+                  </Stack>
+                  <Box
+                    aria-hidden
+                    sx={{
+                      height: 1,
+                      mt: '10px',
+                      mb: '12px',
+                      ml: { xs: 0, sm: 7 },
+                      background: 'linear-gradient(90deg, rgba(245, 165, 36, 0.55), rgba(245, 165, 36, 0.08))',
+                      borderRadius: 0.5,
+                    }}
+                  />
+                  <Box sx={{ mb: 1.25, ml: { xs: 0, sm: 7 } }}>
                     {c.stickerEmoji ? (
-                      <span className={styles.commentSticker} title="Sticker">
+                      <Typography component="span" sx={{ fontSize: '2.5rem', lineHeight: 1, userSelect: 'none' }} title="Sticker">
                         {c.stickerEmoji}
-                      </span>
+                      </Typography>
                     ) : (
-                      <p className={styles.commentText}>{c.body}</p>
+                      <Typography variant="body2" sx={{ m: 0, lineHeight: 1.65 }}>
+                        {c.body}
+                      </Typography>
                     )}
-                  </div>
-                  <div className={styles.commentActions}>
-                    <button type="button" className={styles.commentActionBtn} onClick={handlePlaceholderAction}>
-                      <svg className={styles.commentActionSvg} viewBox="0 0 24 24" aria-hidden>
-                        <path
-                          fill="currentColor"
-                          d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"
-                        />
-                      </svg>
+                  </Box>
+                  <Stack direction="row" sx={{ ml: { xs: 0, sm: 7 }, flexWrap: 'wrap', alignItems: 'center', gap: { xs: '14px 18px', sm: '14px 18px' } }}>
+                    <Button
+                      type="button"
+                      size="small"
+                      startIcon={<ThumbUpAltOutlined sx={{ fontSize: 16 }} />}
+                      onClick={handlePlaceholderAction}
+                      sx={{ color: '#6eb5e8', minWidth: 0, p: 0, '&:hover': { color: 'primary.main', bgcolor: 'transparent' } }}
+                    >
                       {c.likes}
-                    </button>
-                    <button type="button" className={styles.commentActionBtn} onClick={handlePlaceholderAction}>
-                      <svg className={styles.commentActionSvg} viewBox="0 0 24 24" aria-hidden>
-                        <path
-                          fill="currentColor"
-                          d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"
-                        />
-                      </svg>
+                    </Button>
+                    <Button
+                      type="button"
+                      size="small"
+                      startIcon={<ChatBubbleOutlineOutlined sx={{ fontSize: 16 }} />}
+                      onClick={handlePlaceholderAction}
+                      sx={{ color: '#6eb5e8', minWidth: 0, p: 0, '&:hover': { color: 'primary.main', bgcolor: 'transparent' } }}
+                    >
                       Trả lời
-                    </button>
-                    <span className={styles.commentTime}>{c.timeLabel}</span>
-                  </div>
+                    </Button>
+                    <Typography variant="caption" color="text.secondary" sx={{ ml: { xs: 0, sm: 'auto' }, width: { xs: '100%', sm: 'auto' } }}>
+                      {c.timeLabel}
+                    </Typography>
+                  </Stack>
                   {c.replyCount != null && c.replyCount > 0 ? (
-                    <p className={styles.commentRepliesHint}>
+                    <Typography variant="body2" sx={{ mt: 1.25, mb: 0, ml: { xs: 0, sm: 7 } }}>
                       <strong>{c.replyCount} phản hồi</strong>
-                    </p>
+                    </Typography>
                   ) : null}
-                </li>
+                </Box>
               ))}
-            </ul>
-          </section>
+            </Stack>
+          </Box>
         </Container>
-      </div>
+      </Box>
     </>
+  )
+}
+
+function AlertBox({ children }: { children: React.ReactNode }) {
+  return (
+    <Box
+      sx={{
+        maxWidth: 560,
+        mx: 'auto',
+        p: 3,
+        textAlign: 'center',
+        bgcolor: 'background.paper',
+        border: 1,
+        borderColor: 'divider',
+        borderRadius: 1.75,
+      }}
+    >
+      <Typography sx={{ m: 0 }}>{children}</Typography>
+    </Box>
   )
 }

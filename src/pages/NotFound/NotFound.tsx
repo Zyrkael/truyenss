@@ -1,5 +1,5 @@
 import React from 'react'
-import { Container, Button } from 'react-bootstrap'
+import { Box, Button, Container, Typography } from '@mui/material'
 import { Helmet } from 'react-helmet-async'
 import { useNavigate } from 'react-router-dom'
 
@@ -11,33 +11,42 @@ export const NotFound: React.FC = () => {
       <Helmet>
         <title>404 - Không tìm thấy trang</title>
       </Helmet>
-      <Container
-        className="d-flex flex-column justify-content-center align-items-center text-center py-5"
-        style={{ minHeight: '60vh' }}
-      >
-        <h1
-          style={{
-            fontSize: '6rem',
-            fontWeight: 800,
-            color: '#3498db',
-            textShadow: '0 4px 15px rgba(52, 152, 219, 0.4)',
+      <Container maxWidth="sm">
+        <Box
+          sx={{
+            minHeight: '60vh',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center',
+            py: 5,
           }}
         >
-          404
-        </h1>
-        <h2 className="mb-4">Ối! Trang này không tồn tại.</h2>
-        <p style={{ color: 'var(--app-text-muted)', maxWidth: '500px', marginBottom: '30px' }}>
-          Có vẻ như bạn đã đi lạc vào một không gian rạn nứt. Trang bạn đang tìm kiếm đã bị dịch
-          chuyển hoặc chưa từng tồn tại.
-        </p>
-        <Button
-          variant="primary"
-          size="lg"
-          onClick={() => navigate('/')}
-          style={{ borderRadius: '25px', padding: '10px 30px' }}
-        >
-          Trở về trang chủ
-        </Button>
+          <Typography
+            component="h1"
+            sx={{
+              fontSize: { xs: '4.5rem', sm: '6rem' },
+              fontWeight: 800,
+              color: 'primary.main',
+              textShadow: theme => `0 4px 24px ${theme.palette.primary.main}55`,
+              lineHeight: 1,
+              mb: 1,
+            }}
+          >
+            404
+          </Typography>
+          <Typography variant="h5" component="h2" sx={{ fontWeight: 700, mb: 2 }}>
+            Ối! Trang này không tồn tại.
+          </Typography>
+          <Typography color="text.secondary" sx={{ maxWidth: 500, mb: 4 }}>
+            Có vẻ như bạn đã đi lạc vào một không gian rạn nứt. Trang bạn đang tìm kiếm đã bị dịch chuyển hoặc chưa
+            từng tồn tại.
+          </Typography>
+          <Button variant="contained" color="primary" size="large" onClick={() => navigate('/')} sx={{ borderRadius: 999, px: 4 }}>
+            Trở về trang chủ
+          </Button>
+        </Box>
       </Container>
     </>
   )

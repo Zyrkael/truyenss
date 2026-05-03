@@ -8,6 +8,7 @@ import { NotFound } from './pages/NotFound'
 import { ComicDetail } from './pages/ComicDetail'
 import { ComicReader } from './pages/ComicReader'
 import { Login, Register } from './pages/Auth'
+import { AccountPage } from './pages/Account'
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
             <Route path="truyen/:slug" element={<ComicDetail />} />
             <Route path="dang-nhap" element={<Login />} />
             <Route path="dang-ky" element={<Register />} />
+            <Route path="quan-ly-tai-khoan" element={<AccountPage />} />
             <Route path="403" element={<Forbidden />} />
             <Route path="*" element={<NotFound />} />
           </Route>

@@ -4,6 +4,7 @@ import { Button, Container, Form, Nav, Navbar, NavDropdown, Spinner } from 'reac
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { getComicCategories } from '~services/comic'
 import { AUTH_ROUTE_LOGIN, AUTH_ROUTE_REGISTER } from '~/pages/Auth/constants'
+import { ACCOUNT_ROUTE } from '~/pages/Account'
 import { useTheme } from '~/contexts/ThemeContext'
 import styles from './Header.module.scss'
 
@@ -30,7 +31,8 @@ export const Header: React.FC = () => {
     queryFn: getComicCategories,
   })
 
-  const categoryNavActive = pathname === ROUTE_CATEGORIES || pathname.startsWith(`${ROUTE_CATEGORIES}/`)
+  const categoryNavActive =
+    pathname === ROUTE_CATEGORIES || pathname.startsWith(`${ROUTE_CATEGORIES}/`)
 
   const [categoryMenuHoverUi, setCategoryMenuHoverUi] = useState(false)
   const [categoryMenuOpen, setCategoryMenuOpen] = useState(false)
@@ -73,7 +75,8 @@ export const Header: React.FC = () => {
       setCategoryMenuOpen(open)
       clearCategoryCloseTimer()
       if (!open) {
-        categoryHoverOpenBlockedUntilRef.current = performance.now() + CATEGORY_HOVER_REOPEN_BLOCK_MS
+        categoryHoverOpenBlockedUntilRef.current =
+          performance.now() + CATEGORY_HOVER_REOPEN_BLOCK_MS
       } else {
         categoryHoverOpenBlockedUntilRef.current = 0
       }
@@ -111,6 +114,10 @@ export const Header: React.FC = () => {
           <Link to={AUTH_ROUTE_LOGIN} className={styles.topLink}>
             Đăng nhập
           </Link>
+          <span className={styles.topSep}>|</span>
+          <Link to={ACCOUNT_ROUTE} className={styles.topLink}>
+            Quản lý tài khoản
+          </Link>
         </div>
       </div>
 
@@ -142,10 +149,6 @@ export const Header: React.FC = () => {
                   <NavDropdown.Header key="category-menu-head" className={styles.categoryMenuHead}>
                     Thể loại truyện
                   </NavDropdown.Header>
-                  <NavDropdown.Item key="category-all" as={Link} to={ROUTE_CATEGORIES} className={styles.allCategoryItem}>
-                    Xem tất cả
-                  </NavDropdown.Item>
-                  <NavDropdown.Divider key="category-divider" className={styles.categoryDivider} />
                   {categoriesLoading && (
                     <div key="category-loading" className={styles.categoryLoading}>
                       <Spinner animation="border" size="sm" variant="warning" />
@@ -154,12 +157,19 @@ export const Header: React.FC = () => {
                   {categoriesError && (
                     <div key="category-error" className={styles.categoryError}>
                       <span>Không tải được danh sách.</span>
-                      <Button type="button" variant="link" size="sm" className={styles.retryBtn} onClick={() => refetchCategories()}>
+                      <Button
+                        type="button"
+                        variant="link"
+                        size="sm"
+                        className={styles.retryBtn}
+                        onClick={() => refetchCategories()}
+                      >
                         Thử lại
                       </Button>
                     </div>
                   )}
-                  {!categoriesLoading && !categoriesError &&
+                  {!categoriesLoading &&
+                    !categoriesError &&
                     categories.map(cat => (
                       <NavDropdown.Item
                         key={cat.id}
@@ -179,7 +189,12 @@ export const Header: React.FC = () => {
             </Nav>
 
             <Form className={styles.searchForm}>
-              <Form.Control type="search" placeholder="Tìm truyện…" className={styles.searchInput} aria-label="Tìm truyện" />
+              <Form.Control
+                type="search"
+                placeholder="Tìm truyện…"
+                className={styles.searchInput}
+                aria-label="Tìm truyện"
+              />
             </Form>
 
             <Nav className="align-items-center ms-lg-2">

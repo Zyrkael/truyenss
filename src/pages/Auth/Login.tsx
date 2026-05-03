@@ -1,9 +1,8 @@
 import React, { useState } from 'react'
-import { Alert, Button, Container, Form } from 'react-bootstrap'
+import { Alert, Box, Button, Checkbox, Container, FormControlLabel, Link, Paper, Stack, TextField, Typography } from '@mui/material'
 import { Helmet } from 'react-helmet-async'
-import { Link } from 'react-router-dom'
+import { Link as RouterLink } from 'react-router-dom'
 import { AUTH_ROUTE_REGISTER } from './constants'
-import styles from './AuthForm.module.scss'
 
 export const Login: React.FC = () => {
   const [notice, setNotice] = useState<string | null>(null)
@@ -23,53 +22,53 @@ export const Login: React.FC = () => {
         <title>Đăng nhập - TruyenSS</title>
       </Helmet>
 
-      <Container className={styles.page}>
-        <div className={styles.card}>
-          <Link to="/" className={styles.brand}>
-            Truyen<span>SS</span>
-          </Link>
-          <p className={styles.lead}>Đăng nhập để đồng bộ theo dõi và bình luận (khi có API).</p>
-          <h1 className={styles.title}>Đăng nhập</h1>
+      <Container maxWidth="sm" sx={{ py: 4 }}>
+        <Paper elevation={0} sx={{ p: { xs: 2, sm: 4 }, border: 1, borderColor: 'divider', borderRadius: 2 }}>
+          <Box component={RouterLink} to="/" sx={{ textAlign: 'center', textDecoration: 'none', color: 'inherit', display: 'block', mb: 1 }}>
+            <Typography variant="h5" sx={{ fontWeight: 800 }}>
+              Truyen
+              <Box component="span" sx={{ color: 'primary.main' }}>
+                SS
+              </Box>
+            </Typography>
+          </Box>
+          <Typography color="text.secondary" sx={{ mb: 3, textAlign: 'center' }}>
+            Đăng nhập để đồng bộ theo dõi và bình luận (khi có API).
+          </Typography>
+          <Typography variant="h6" sx={{ fontWeight: 800, mb: 2 }}>
+            Đăng nhập
+          </Typography>
 
           {notice ? (
-            <Alert variant="warning" className="mb-3 py-2 small" onClose={() => setNotice(null)} dismissible>
+            <Alert severity="warning" onClose={() => setNotice(null)} sx={{ mb: 2 }}>
               {notice}
             </Alert>
           ) : null}
 
-          <Form onSubmit={handleSubmit} noValidate>
-            <Form.Group className={styles.field} controlId="login-email">
-              <Form.Label className={styles.label}>Email</Form.Label>
-              <Form.Control
-                className={styles.input}
-                type="email"
-                name="email"
-                autoComplete="email"
-                placeholder="you@example.com"
-                required
-              />
-            </Form.Group>
-            <Form.Group className={styles.field} controlId="login-password">
-              <Form.Label className={styles.label}>Mật khẩu</Form.Label>
-              <Form.Control
-                className={styles.input}
-                type="password"
-                name="password"
-                autoComplete="current-password"
-                placeholder="••••••••"
-                required
-              />
-            </Form.Group>
-            <Form.Check type="checkbox" id="login-remember" label="Ghi nhớ đăng nhập" className={`mb-3 ${styles.check}`} />
-            <Button type="submit" variant="warning" className={`text-dark ${styles.submit}`}>
+          <Stack component="form" spacing={2.5} onSubmit={handleSubmit} noValidate>
+            <TextField name="email" type="email" label="Email" autoComplete="email" placeholder="you@example.com" required fullWidth />
+            <TextField
+              name="password"
+              type="password"
+              label="Mật khẩu"
+              autoComplete="current-password"
+              placeholder="••••••••"
+              required
+              fullWidth
+            />
+            <FormControlLabel control={<Checkbox name="remember" />} label="Ghi nhớ đăng nhập" />
+            <Button type="submit" variant="contained" color="primary" size="large" fullWidth>
               Đăng nhập
             </Button>
-          </Form>
+          </Stack>
 
-          <p className={styles.switch}>
-            Chưa có tài khoản? <Link to={AUTH_ROUTE_REGISTER}>Đăng ký</Link>
-          </p>
-        </div>
+          <Typography color="text.secondary" sx={{ mt: 3, textAlign: 'center' }}>
+            Chưa có tài khoản?{' '}
+            <Link component={RouterLink} to={AUTH_ROUTE_REGISTER} sx={{ fontWeight: 700 }}>
+              Đăng ký
+            </Link>
+          </Typography>
+        </Paper>
       </Container>
     </>
   )
