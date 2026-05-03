@@ -1,0 +1,117 @@
+.page {
+  padding: 24px 0 48px;
+}
+
+.card {
+  max-width: 440px;
+  margin-inline: auto;
+  padding: clamp(22px, 4vw, 32px);
+  background: var(--qq-panel);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.22);
+}
+
+.brand {
+  display: block;
+  margin: 0 auto 8px;
+  text-align: center;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--app-text);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+
+  span {
+    color: var(--qq-accent);
+  }
+
+  &:hover {
+    color: var(--app-text);
+    opacity: 0.92;
+  }
+}
+
+.lead {
+  margin: 0 0 22px;
+  text-align: center;
+  font-size: 0.95rem;
+  color: var(--app-text-muted);
+  line-height: 1.5;
+}
+
+.title {
+  margin: 0 0 18px;
+  text-align: center;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--app-text);
+}
+
+.field {
+  margin-bottom: 16px;
+}
+
+.label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--app-text-muted);
+  margin-bottom: 6px;
+}
+
+.input {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: var(--app-text);
+
+  &::placeholder {
+    color: var(--app-text-muted);
+    opacity: 0.75;
+  }
+
+  &:focus {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(245, 165, 36, 0.45);
+    box-shadow: 0 0 0 2px rgba(245, 165, 36, 0.12);
+    color: var(--app-text);
+  }
+}
+
+.check {
+  font-size: 0.88rem;
+  color: var(--app-text-muted);
+
+  a {
+    color: var(--qq-accent);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.submit {
+  width: 100%;
+  margin-top: 8px;
+  font-weight: 800;
+}
+
+.switch {
+  margin: 20px 0 0;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--app-text-muted);
+
+  a {
+    font-weight: 700;
+    color: var(--qq-accent);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

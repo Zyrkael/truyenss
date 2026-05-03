@@ -7,6 +7,7 @@ import { Forbidden } from './pages/Forbidden'
 import { NotFound } from './pages/NotFound'
 import { ComicDetail } from './pages/ComicDetail'
 import { ComicReader } from './pages/ComicReader'
+import { Login, Register } from './pages/Auth'
 
 function App() {
   return (
@@ -29,6 +30,8 @@ function App() {
             <Route path="the-loai/:slug" element={<Category />} />
             <Route path="truyen/:slug/doc/:chapterOrder" element={<ComicReader />} />
             <Route path="truyen/:slug" element={<ComicDetail />} />
+            <Route path="dang-nhap" element={<Login />} />
+            <Route path="dang-ky" element={<Register />} />
             <Route path="403" element={<Forbidden />} />
             <Route path="*" element={<NotFound />} />
           </Route>

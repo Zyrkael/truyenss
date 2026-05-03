@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Button, Container, Form, Nav, Navbar, NavDropdown, Spinner } from 'react-bootstrap'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { getComicCategories } from '~services/comic'
+import { AUTH_ROUTE_LOGIN, AUTH_ROUTE_REGISTER } from '~/pages/Auth/constants'
 import { useTheme } from '~/contexts/ThemeContext'
 import styles from './Header.module.scss'
 
@@ -15,10 +16,6 @@ const MEDIA_HOVER_FINE_POINTER = '(hover: hover) and (pointer: fine)' as const
 const CATEGORY_DROPDOWN_CLOSE_DELAY_MS = 220
 /** Sau khi đóng bằng click/Escape/chọn mục, tạm không mở lại bằng hover (tránh mouseenter “dính” mở lại ngay). */
 const CATEGORY_HOVER_REOPEN_BLOCK_MS = 320
-
-const handlePlaceholderAuth = (e: React.MouseEvent) => {
-  e.preventDefault()
-}
 
 export const Header: React.FC = () => {
   const { pathname } = useLocation()
@@ -107,13 +104,13 @@ export const Header: React.FC = () => {
     <header className={styles.wrap}>
       <div className={styles.topBar}>
         <div className={styles.topInner}>
-          <a href="#" className={styles.topLink} onClick={handlePlaceholderAuth}>
+          <Link to={AUTH_ROUTE_REGISTER} className={styles.topLink}>
             Đăng ký
-          </a>
+          </Link>
           <span className={styles.topSep}>|</span>
-          <a href="#" className={styles.topLink} onClick={handlePlaceholderAuth}>
+          <Link to={AUTH_ROUTE_LOGIN} className={styles.topLink}>
             Đăng nhập
-          </a>
+          </Link>
         </div>
       </div>
 
@@ -195,9 +192,9 @@ export const Header: React.FC = () => {
               >
                 {theme === 'dark' ? '☀️' : '🌙'}
               </Button>
-              <Button type="button" variant="outline-warning" className={styles.loginBtn} onClick={handlePlaceholderAuth}>
+              <Link to={AUTH_ROUTE_LOGIN} className={`btn btn-outline-warning ${styles.loginBtn}`}>
                 Đăng nhập
-              </Button>
+              </Link>
             </Nav>
           </Navbar.Collapse>
         </Container>
