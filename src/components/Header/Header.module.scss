@@ -1,29 +1,203 @@
-.header {
-  background-color: var(--header-bg) !important;
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--header-border);
-  padding: 15px 0;
+$header-bg: #1f1f1f;
+$header-top: #181818;
+$header-text: #e8e8e8;
+$header-muted: #9a9a9a;
 
-  .brand {
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: var(--app-text) !important;
-    letter-spacing: 1px;
+.wrap {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1030;
+  background: $header-bg;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+}
 
-    span {
-      color: #3498db;
-    }
+.topBar {
+  background: $header-top;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 0.8rem;
+}
+
+.topInner {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  max-width: 1200px;
+  margin-inline: auto;
+}
+
+.topLink {
+  color: $header-muted;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 6px;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+
+  &:hover {
+    color: var(--qq-accent);
+    background-color: rgba(255, 255, 255, 0.04);
+  }
+}
+
+.topSep {
+  color: rgba(255, 255, 255, 0.15);
+  user-select: none;
+}
+
+.navMain {
+  padding: 10px 0;
+  background: $header-bg !important;
+}
+
+.navInner {
+  max-width: 1200px;
+  margin-inline: auto;
+}
+
+.brand {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: $header-text !important;
+  letter-spacing: 0.02em;
+  text-decoration: none !important;
+
+  span {
+    color: var(--qq-accent);
+  }
+}
+
+.navLink {
+  color: $header-muted !important;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 8px 12px !important;
+  border-radius: 8px;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+
+  &:hover {
+    color: $header-text !important;
+    background-color: rgba(255, 255, 255, 0.06);
   }
 
-  .navLink {
-    color: var(--app-text-muted) !important;
-    font-weight: 500;
-    margin: 0 10px;
-    transition: color 0.3s ease;
-
-    &:hover,
-    &.active {
-      color: var(--app-text) !important;
-    }
+  &:global(.active) {
+    color: var(--qq-accent) !important;
+    background-color: var(--qq-accent-soft);
   }
+}
+
+.searchForm {
+  flex: 1;
+  max-width: 320px;
+  margin: 0 12px;
+}
+
+.searchInput {
+  background: #2c2c2c !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: $header-text !important;
+  border-radius: 999px !important;
+  padding-left: 16px !important;
+  font-size: 0.9rem;
+
+  &::placeholder {
+    color: $header-muted;
+  }
+
+  &:focus {
+    border-color: var(--qq-accent) !important;
+    box-shadow: 0 0 0 2px var(--qq-accent-soft) !important;
+  }
+}
+
+.themeBtn {
+  color: $header-text !important;
+  font-size: 1.15rem;
+  padding: 6px 10px !important;
+  border-radius: 8px;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+  }
+}
+
+.loginBtn {
+  font-weight: 700;
+  font-size: 0.88rem;
+  border-radius: 999px !important;
+  padding: 8px 18px !important;
+  border-color: var(--qq-accent) !important;
+  color: var(--qq-accent) !important;
+  background: transparent !important;
+
+  &:hover {
+    background: var(--qq-accent) !important;
+    color: #1a1a1a !important;
+  }
+}
+
+.wrap :global(.dropdown-menu) {
+  max-height: min(70vh, 420px);
+  overflow-y: auto;
+  background: #2a2a2a !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 12px !important;
+  padding: 8px !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45) !important;
+}
+
+.dropdownItem {
+  color: $header-text !important;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 8px 12px !important;
+
+  &:hover,
+  &:focus {
+    background: rgba(255, 193, 7, 0.12) !important;
+    color: var(--qq-accent) !important;
+  }
+}
+
+.dropdownHeader {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $header-muted !important;
+  padding: 6px 12px !important;
+}
+
+@media (max-width: 991px) {
+  .searchForm {
+    max-width: none;
+    margin: 12px 0;
+    width: 100%;
+  }
+}
+
+.wrap :global(.nav-link.dropdown-toggle) {
+  color: $header-muted !important;
+  font-weight: 600;
+  padding: 8px 12px !important;
+  border-radius: 8px;
+
+  &:hover,
+  &:focus {
+    color: $header-text !important;
+    background-color: rgba(255, 255, 255, 0.06) !important;
+  }
+}
+
+.wrap :global(.dropdown-menu.show) {
+  margin-top: 8px !important;
 }

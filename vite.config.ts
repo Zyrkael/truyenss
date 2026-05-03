@@ -18,6 +18,7 @@ export default defineConfig({
       { find: '~hooks', replacement: r('src/hooks') },
       { find: '~assets', replacement: r('src/assets') },
       { find: '~types', replacement: r('src/types') },
+      { find: '~theme', replacement: r('src/theme') },
       { find: '~', replacement: r('src') },
     ],
   },

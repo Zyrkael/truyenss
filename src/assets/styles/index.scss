@@ -3,28 +3,48 @@
 
 :root,
 [data-bs-theme='light'] {
-  --app-bg: #f4f6f8;
-  --app-text: #2c3e50;
-  --app-text-muted: #7f8c8d;
+  --app-bg: #eceff4;
+  --app-text: #1c1c1c;
+  --app-text-muted: #5c5c5c;
   --card-bg: #ffffff;
-  --header-bg: rgba(255, 255, 255, 0.85);
-  --header-border: rgba(0, 0, 0, 0.1);
+  --header-bg: rgba(255, 255, 255, 0.92);
+  --header-border: rgba(0, 0, 0, 0.08);
   --border-color: rgba(0, 0, 0, 0.1);
+  --qq-accent: #f5a524;
+  --qq-accent-soft: rgba(245, 165, 36, 0.18);
+  --qq-hot-start: #ffb547;
+  --qq-hot-end: #f57c00;
+  --qq-row-hover: rgba(0, 0, 0, 0.04);
+  --qq-panel: #ffffff;
+  --qq-header-offset: 108px;
 }
 
 [data-bs-theme='dark'] {
-  --app-bg: #0f0f1a;
-  --app-text: #ffffff;
-  --app-text-muted: #a0a0b8;
-  --card-bg: #1a1a2e;
-  --header-bg: rgba(15, 15, 26, 0.8);
-  --header-border: rgba(255, 255, 255, 0.1);
-  --border-color: rgba(255, 255, 255, 0.1);
+  --app-bg: #1a1a1a;
+  --app-text: #f2f2f2;
+  --app-text-muted: #9a9a9a;
+  --card-bg: #252525;
+  --header-bg: #222222;
+  --header-border: rgba(255, 255, 255, 0.06);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --qq-accent: #ffc107;
+  --qq-accent-soft: rgba(255, 193, 7, 0.14);
+  --qq-hot-start: #ffd54f;
+  --qq-hot-end: #ff8f00;
+  --qq-row-hover: rgba(255, 255, 255, 0.05);
+  --qq-panel: #222222;
+  --qq-header-offset: 108px;
 }
 
 body {
   background-color: var(--app-bg);
   color: var(--app-text);
+  font-family:
+    'Be Vietnam Pro',
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
   transition:
     background-color 0.3s ease,
     color 0.3s ease;
