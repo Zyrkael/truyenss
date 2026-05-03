@@ -406,7 +406,13 @@ export const AccountPage: React.FC = () => {
                   <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                     <FormControl fullWidth>
                       <InputLabel id="acc-gender-label">Giới tính</InputLabel>
-                      <Select<Gender> labelId="acc-gender-label" label="Giới tính" value={gender} onChange={onGenderChange}>
+                      <Select<Gender>
+                        labelId="acc-gender-label"
+                        label="Giới tính"
+                        value={gender}
+                        onChange={onGenderChange}
+                        MenuProps={{ disableScrollLock: true }}
+                      >
                         <MenuItem value="male">Nam</MenuItem>
                         <MenuItem value="female">Nữ</MenuItem>
                         <MenuItem value="other">Khác</MenuItem>
