@@ -1,6 +1,6 @@
 import { createTheme } from '@mui/material/styles'
 
-const FONT_STACK = '"Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif'
+const FONT_STACK = '"Inter", system-ui, -apple-system, "Segoe UI", sans-serif'
 
 const QQ_GOLD = '#f5a524'
 const QQ_GOLD_DARK = '#c7780a'
