@@ -39,6 +39,10 @@ export const createTruyenMuiTheme = (mode: 'light' | 'dark') =>
     components: {
       MuiCssBaseline: {
         styleOverrides: {
+          // Tránh nhảy layout khi Select/Menu/Dialog khóa cuộn (scrollbar biến mất rồi xuất hiện lại).
+          html: {
+            scrollbarGutter: 'stable',
+          },
           body: {
             backgroundColor: mode === 'dark' ? '#1a1a1a' : '#eceff4',
           },
