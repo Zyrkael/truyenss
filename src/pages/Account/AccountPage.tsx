@@ -665,7 +665,7 @@ export const AccountPage: React.FC = () => {
                       <Box sx={{ position: 'relative' }}>
                         <CardActionArea
                           component={RouterLink}
-                          to={`/truyen/${comic.slug}`}
+                          to={`/truyen-tranh/${comic.slug}`}
                           sx={{ display: 'block', textAlign: 'left' }}
                         >
                           <Box
@@ -857,7 +857,7 @@ export const AccountPage: React.FC = () => {
                     <Paper
                       key={item.id}
                       component={RouterLink}
-                      to={`/truyen/${item.slug}`}
+                      to={`/truyen-tranh/${item.slug}`}
                       variant="outlined"
                       sx={{
                         p: { xs: 1.5, sm: 2 },

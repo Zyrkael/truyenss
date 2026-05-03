@@ -35,7 +35,7 @@ import { getComicDetail } from '~services/comic'
 const ROUTE_HOME = '/'
 const ROUTE_CATEGORIES = '/the-loai'
 
-const readerDocPath = (slug: string, order: number) => `/truyen/${slug}/doc/${order}`
+const readerDocPath = (slug: string, chapterName: string) => `/truyen-tranh/${slug}-chap-${chapterName}`
 
 /** Số liệu mẫu ổn định theo slug (API chi tiết chưa có lượt thích / theo dõi / xem). */
 function mockEngagementFromSlug(slug: string) {
@@ -365,7 +365,7 @@ export const ComicDetail: React.FC = () => {
                 {firstOrder != null ? (
                   <Button
                     component={RouterLink}
-                    to={readerDocPath(data.slug, firstOrder)}
+                    to={readerDocPath(data.slug, data.firstChapter?.chapterName || '0')}
                     variant="contained"
                     size="medium"
                     startIcon={<MenuBookOutlined />}
@@ -429,7 +429,7 @@ export const ComicDetail: React.FC = () => {
               </Stack>
 
               {latestOrder != null && latestOrder !== firstOrder ? (
-                <Button component={RouterLink} to={readerDocPath(data.slug, latestOrder)} variant="text" color="primary" size="small" sx={{ fontWeight: 700, mt: -0.5 }}>
+                <Button component={RouterLink} to={readerDocPath(data.slug, data.lastChapter?.chapterName || '0')} variant="text" color="primary" size="small" sx={{ fontWeight: 700, mt: -0.5 }}>
                   Chương mới nhất →
                 </Button>
               ) : null}
@@ -514,7 +514,7 @@ export const ComicDetail: React.FC = () => {
                     key={ch.orderIndex}
                     component={RouterLink}
                     id={`chapter-${ch.orderIndex}`}
-                    to={readerDocPath(data.slug, ch.orderIndex)}
+                    to={readerDocPath(data.slug, ch.chapterName)}
                     role="listitem"
                     sx={{
                       display: 'flex',

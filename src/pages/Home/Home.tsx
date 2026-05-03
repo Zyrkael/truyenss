@@ -19,7 +19,7 @@ import { getComicCategories, getHomeComics } from '~services/comic'
 import { ComicHotRow } from './ComicHotRow'
 
 const ROUTE_CATEGORIES = '/the-loai'
-const ROUTE_COMIC_BASE = '/truyen'
+const ROUTE_COMIC_BASE = '/truyen-tranh'
 const SKELETON_CARD_COUNT = 12
 const HOT_ROW_COUNT = 8
 const CAROUSEL_COMIC_LIMIT = 18

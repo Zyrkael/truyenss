@@ -359,7 +359,7 @@ export const Category: React.FC = () => {
                       >
                         <Box
                           component={RouterLink}
-                          to={`/truyen/${comic.slug}`}
+                          to={`/truyen-tranh/${comic.slug}`}
                           sx={{
                             display: 'block',
                             borderRadius: 1,
@@ -378,7 +378,7 @@ export const Category: React.FC = () => {
                           <Typography variant="h6" component="h2" sx={{ m: 0, fontWeight: 800, lineHeight: 1.3, fontSize: '1.05rem' }}>
                             <Box
                               component={RouterLink}
-                              to={`/truyen/${comic.slug}`}
+                              to={`/truyen-tranh/${comic.slug}`}
                               sx={{ color: 'text.primary', textDecoration: 'none', '&:hover': { color: 'primary.main' } }}
                             >
                               {comic.title}

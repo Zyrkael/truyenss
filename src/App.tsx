@@ -1,5 +1,5 @@
 import { Helmet } from 'react-helmet-async'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, useParams, Navigate } from 'react-router-dom'
 import { MainLayout } from './layouts'
 import { Home } from './pages/Home'
 import { Category } from './pages/Category'
@@ -9,6 +9,15 @@ import { ComicDetail } from './pages/ComicDetail'
 import { ComicReader } from './pages/ComicReader'
 import { Login, Register } from './pages/Auth'
 import { AccountPage } from './pages/Account'
+
+const ComicRouteResolver = () => {
+  const { slug } = useParams<{ slug: string }>()
+  if (!slug) return <Navigate to="/404" replace />
+  if (slug.includes('-chap-')) {
+    return <ComicReader />
+  }
+  return <ComicDetail />
+}
 
 function App() {
   return (
@@ -29,8 +38,7 @@ function App() {
             <Route index element={<Home />} />
             <Route path="the-loai" element={<Category />} />
             <Route path="the-loai/:slug" element={<Category />} />
-            <Route path="truyen/:slug/doc/:chapterOrder" element={<ComicReader />} />
-            <Route path="truyen/:slug" element={<ComicDetail />} />
+            <Route path="truyen-tranh/:slug" element={<ComicRouteResolver />} />
             <Route path="dang-nhap" element={<Login />} />
             <Route path="dang-ky" element={<Register />} />
             <Route path="quan-ly-tai-khoan" element={<AccountPage />} />

@@ -3,7 +3,7 @@ import { Box, Chip, Typography } from '@mui/material'
 import { Link } from 'react-router-dom'
 import type { Comic } from '~types/comic'
 
-const ROUTE_COMIC_BASE = '/truyen'
+const ROUTE_COMIC_BASE = '/truyen-tranh'
 const HOT_BADGE_MAX_RANK = 3
 
 interface ComicHotRowProps {

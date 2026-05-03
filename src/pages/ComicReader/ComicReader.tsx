@@ -22,14 +22,16 @@ import { getChapterRead, getComicDetail } from '~services/comic'
 
 const ROUTE_HOME = '/'
 
-const readerDocPath = (slug: string, order: number) => `/truyen/${slug}/doc/${order}`
+const readerDocPath = (slug: string, chapterName: string) => `/truyen-tranh/${slug}-chap-${chapterName}`
 
 export const ComicReader: React.FC = () => {
-  const { slug, chapterOrder: chapterOrderParam } = useParams<{ slug: string; chapterOrder: string }>()
+  const { slug: rawSlug } = useParams<{ slug: string }>()
   const navigate = useNavigate()
   const [serverIdx, setServerIdx] = useState(0)
 
-  const order = chapterOrderParam != null ? Number.parseInt(chapterOrderParam, 10) : Number.NaN
+  const match = rawSlug?.match(/^(.*)-chap-([\w.-]+)$/i)
+  const slug = match ? match[1] : rawSlug
+  const chapId = match ? match[2] : ''
 
   const {
     data: comic,
@@ -43,10 +45,10 @@ export const ComicReader: React.FC = () => {
 
   const chapterCount = comic?.chapterCount ?? 0
   const safeOrder = useMemo(() => {
-    if (!Number.isFinite(order) || order < 0) return 0
-    if (chapterCount > 0 && order >= chapterCount) return chapterCount - 1
-    return order
-  }, [order, chapterCount])
+    if (!comic) return 0
+    const idx = comic.chaptersAscending.findIndex(c => c.chapterName === chapId)
+    return idx >= 0 ? idx : 0
+  }, [chapId, comic])
 
   const servers = comic?.chapterServers ?? []
   const activeServer = servers[serverIdx] ?? servers[0]
@@ -66,23 +68,23 @@ export const ComicReader: React.FC = () => {
   })
 
   const goPrev = useCallback(() => {
-    if (!slug || safeOrder <= 0) return
-    navigate(readerDocPath(slug, safeOrder - 1))
-  }, [navigate, slug, safeOrder])
+    if (!slug || !comic || safeOrder <= 0) return
+    navigate(readerDocPath(slug, comic.chaptersAscending[safeOrder - 1].chapterName))
+  }, [navigate, slug, comic, safeOrder])
 
   const goNext = useCallback(() => {
-    if (!slug || chapterCount < 1 || safeOrder >= chapterCount - 1) return
-    navigate(readerDocPath(slug, safeOrder + 1))
-  }, [navigate, slug, safeOrder, chapterCount])
+    if (!slug || !comic || chapterCount < 1 || safeOrder >= chapterCount - 1) return
+    navigate(readerDocPath(slug, comic.chaptersAscending[safeOrder + 1].chapterName))
+  }, [navigate, slug, comic, safeOrder, chapterCount])
 
   const onChapterSelect = useCallback(
     (e: SelectChangeEvent<number>) => {
-      if (!slug) return
+      if (!slug || !comic) return
       const next = Number(e.target.value)
       if (!Number.isFinite(next) || next < 0 || next >= chapterCount) return
-      navigate(readerDocPath(slug, next))
+      navigate(readerDocPath(slug, comic.chaptersAscending[next].chapterName))
     },
-    [navigate, slug, chapterCount],
+    [navigate, slug, comic, chapterCount],
   )
 
   useEffect(() => {
@@ -108,10 +110,6 @@ export const ComicReader: React.FC = () => {
 
   if (!slug) return <Navigate to="/404" replace />
 
-  if (!Number.isFinite(order) || order < 0) {
-    return <Navigate to={readerDocPath(slug, 0)} replace />
-  }
-
   if (comicLoading) {
     return (
       <Container maxWidth="lg" sx={{ py: 5, textAlign: 'center' }}>
@@ -134,14 +132,14 @@ export const ComicReader: React.FC = () => {
   }
 
   if (chapterCount === 0) {
-    return <Navigate to={`/truyen/${slug}`} replace />
+    return <Navigate to={`/truyen-tranh/${slug}`} replace />
   }
 
-  if (Number.isFinite(order) && order !== safeOrder) {
-    return <Navigate to={readerDocPath(comic.slug, safeOrder)} replace />
+  if (!comic.chaptersAscending.some(c => c.chapterName === chapId)) {
+    return <Navigate to={readerDocPath(comic.slug, comic.firstChapter?.chapterName || '0')} replace />
   }
 
-  const detailPath = `/truyen/${comic.slug}`
+  const detailPath = `/truyen-tranh/${comic.slug}`
   const chName = currentChapter?.chapterName ?? String(safeOrder + 1)
   const chTitle = currentChapter?.chapterTitle
   const nextCh = comic.chaptersAscending[safeOrder + 1]
